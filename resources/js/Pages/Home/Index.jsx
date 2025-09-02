@@ -1,16 +1,13 @@
 import React from "react";
 import { Head } from "@inertiajs/react";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import AppShell from "@/Layouts/AppShell";
 
-export default function Index() {
+
+export default function HomeIndex() {
   return (
-    <AuthenticatedLayout
-      header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">ホーム</h2>}
-    >
+    <AppShell title="ホーム">
       <Head title="ホーム" />
-      <div className="p-6">
-        <h1 className="text-2xl font-bold text-main">たほ</h1>
-      </div>
-    </AuthenticatedLayout>
+      {/* ここにホームの中身 */}
+    </AppShell>
   );
 }
