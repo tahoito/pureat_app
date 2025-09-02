@@ -9,43 +9,37 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
+    // ← これが無いと今回のエラーになる
     public function create(): Response
     {
         return Inertia::render('Auth/Register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'name' => nullable(),
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        $validated = $request->validate([
+            'email' => ['required','string','email','max:255','unique:'.User::class],
+            'password' => ['required','confirmed', Rules\Password::defaults()],
         ]);
 
+        $autoName = Str::before($validated['email'], '@');
+
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $autoName, // name入力なしでも通す
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
         ]);
 
         event(new Registered($user));
-
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->intended(route('home'));
     }
 }
