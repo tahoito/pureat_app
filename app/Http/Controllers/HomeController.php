@@ -10,7 +10,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $categories = Category::orderBy('sort_order')
+        $categories = Category::orderBy('')
             ->take(9)
             ->get(['id','name','image_url']);
 
@@ -32,6 +32,7 @@ class HomeController extends Controller
             'categories' => $categories,
             'tags' => $tags,
             'recipes' => $recipes,
+            'tab' => request('tab','all'),
         ]);
 
     }

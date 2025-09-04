@@ -6,7 +6,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-
 Route::get('/welcome', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -16,33 +15,21 @@ Route::get('/welcome', function () {
     ]);
 });
 
+// ここから認証後の画面
+Route::middleware(['auth', 'verified'])->group(function () {
+    // 探す（ホーム）
+    Route::get('/', [HomeController::class, 'index'])->name('explore');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    // 追加ページ（見た目だけならこれでOK）
+    Route::get('/add', fn () => Inertia::render('Add/Index'))->name('recipes.add');
 
-Route::middleware('auth')->group(function () {
+    // ダッシュボード（必要なら）
+    Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
+
+    // プロフィール
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-
-//ホーム（ログイン後）
-Route::middleware(['auth','verified'])->group(function (){
-    Route::get('/',function() {
-        return Inertia::render('Home/Index');
-    })->name('home');
-});
-
-Route::middleware(['auth','verified'])->group(function (){
-    Route::get('/',[HomeController::class,'index'])->name('home');
-});
-
-Route::get('/',[HomeController::class,'index'])->name('explore');
-
-Route::get('/add',function(){
-    return Inertia::render('Add/Index');
-})->name('recipes.add');
 
 require __DIR__.'/auth.php';
