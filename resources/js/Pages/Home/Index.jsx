@@ -35,13 +35,20 @@ export default function HomeIndex() {
         <section>
           <h2 className="text-lg mb-2 text-text">カテゴリー</h2>
           <div className="grid grid-cols-3 gap-3">
-            {categories.map((c)=>(
+            {categories.slice(0,9).map((c)=>(
               <Link 
                 key={c.name}
                 href={'/recipes?category=${encodeURLComponent(c.name)}'}
-                className="h-16 rounded-xl border border-main/30 bg-white flex flex-col items-center justify-center text-xs"
+                className="relative h-16 rounded-xl border border-main/30 overflow-hidden group"
               >
-                <div className="text-xl">{c.icon}</div>
+                <img
+                  src={c.image_url}
+                  alt={c.name}
+                  className="absolute inset-0 w-full object-cover transition-transform duration-300 group-hover::scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/50 to-transparent" />
+                <div className="absolute left-2 bottom-2 text-text text-xs font-semibold">{c.icon}</div>
                 <div className="mt-1">{c.name}</div>
               </Link>
             ))}
