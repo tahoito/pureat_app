@@ -39,4 +39,10 @@ Route::middleware(['auth','verified'])->group(function (){
     Route::get('/',[HomeController::class,'index'])->name('home');
 });
 
+Route::get('/',[HomeController::class,'index'])->name('explore');
+
+Route::get('/add',function(){
+    return Inertia::render('Add/Index');
+})->name('recipes.add');
+
 require __DIR__.'/auth.php';

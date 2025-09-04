@@ -18,7 +18,8 @@ class RecipeSeeder extends Seeder
             'category_id' => 1,
             'title' => '簡単カレー',
             'description' => '忙しい日にぴったりの時短カレー',
-            'main_image_path' => '/images/sample_curry.jpeg'
+            'main_image_path' => '/images/sample_curry.jpeg',
+            'is_recommended' => true,
         ]);
 
         Recipe::create([
@@ -26,7 +27,8 @@ class RecipeSeeder extends Seeder
             'category_id' => 2,
             'title' => '和風パスタ',
             'description' => '醤油ベースでさっぱりとした和風スパゲッティ',
-            'main_image_path' => '/images/sample_pasta.jpeg',
+            'main_image_path' => '/images/sample_pasta.webp',
+            'is_recommended' => true,
         ]);
     }
 }

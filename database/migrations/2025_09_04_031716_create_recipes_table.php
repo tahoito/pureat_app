@@ -21,6 +21,7 @@ return new class extends Migration
             $table->unsignedInteger('total_minutes')->nullable();
             $table->string('main_image_path')->nullable();
             $table->boolean('is_favorite')->default(false);
+            $table->boolean('is_recommended')->default(false)->index();
             $table->timestamps();
             $table->index('category_id');
         });

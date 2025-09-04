@@ -4,15 +4,36 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Category;   
 use App\Models\Tag;
+use App\Models\Recipe;   
 
 class HomeController extends Controller
 {
     public function index()
     {
+        $categories = Category::orderBy('sort_order')
+            ->take(9)
+            ->get(['id','name','image_url']);
+
+        $tags = Tag::orderBy('name')
+            ->get(['id','name','slug']);
+
+        $tab = request('tab','all');
+
+        $query = Recipe::select('id','title','description','main_image_path','is_recommended') 
+            ->latest('id');
+           
+        if ($tab === 'recommended'){
+            $query->where('is_recommended',1);
+        }
+
+        $recipes = $query->paginate(10)->withQueryString();
+
         return Inertia::render('Home/Index',[
-            'categories' => Category::orderBy('name')->take(9)->get(['name','image_url']),
-            'tags' => Tag::orderBy('name')->get(['name','slug']),
+            'categories' => $categories,
+            'tags' => $tags,
+            'recipes' => $recipes,
         ]);
+
     }
 
 }

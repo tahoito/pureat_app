@@ -1,93 +1,140 @@
 import React from "react";
-import { Head,Link,usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-
 export default function HomeIndex() {
+  const { categories = [], tags = [], recipes = { data: [] }, tab = "all", highlight } = usePage().props;
 
-  const { props } = usePage();
-  const { categories = [], tags = [], recipes = []} = usePage().props;
+  const Tab = ({ to, active, children }) => (
+    <Link
+    href={to}
+    preserveScroll
+    className={`inline-flex items-center justify-center
+      h-6 px-2.5 rounded-full border text-xs   /* ← 小さめ文字＋高さは確保 */
+      ${active ? 'bg-amber-500 text-white border-amber-500'
+               : 'bg-white text-gray-600'}`}
+    aria-selected={active}
+    role="tab"
+  >
+    {children}
+  </Link>
+  );
 
   return (
     <AppShell title="ホーム">
       <Head title="ホーム" />
-      
+
       <div className="p-6 space-y-6">
-        <form className="relative"
+        {/* 検索 */}
+        <form
+          className="relative"
           onSubmit={(e) => {
             e.preventDefault();
-        }}>
-          <input 
+          }}
+        >
+          <input
             className="w-full h-12 pl-12 pr-4 rounded-full border-main/40 outline-none bg-white"
             placeholder="材料や料理名で検索"
           />
-          <button 
+          <button
             type="submit"
             className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg"
             aria-label="検索"
           >
-          <FontAwesomeIcon icon={faSearch} className="text-main"/>
+            <FontAwesomeIcon icon={faSearch} className="text-main" />
           </button>
         </form>
 
+        {/* カテゴリー */}
         <section>
           <h2 className="text-lg mb-2 text-text">カテゴリー</h2>
           <div className="grid grid-cols-3 gap-3">
-            {categories.slice(0,9).map((c)=>(
-              <Link 
+            {categories.slice(0, 9).map((c) => (
+              <Link
                 key={c.name}
-                href={'/recipes?category=${encodeURIComponent(c.name)}'}
+                href={`/recipes?category=${encodeURIComponent(c.name)}`} // ← バッククォートに修正
                 className="relative h-16 rounded-xl border border-main/30 overflow-hidden group"
               >
                 <img
                   src={c.image_url}
                   alt={c.name}
-                  className="absolute inset-0 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   loading="eager"
                   decoding="async"
                 />
                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 to-transparent" />
-                <span className="absolute left-2 bottom-2 z-10 text-white text-xs font-semibold drop-shadow">{c.icon}
-                  {c.name}
+                <span className="absolute left-2 bottom-2 z-10 text-white text-xs font-semibold drop-shadow">
+                  {c.icon}{c.name}
                 </span>
               </Link>
             ))}
           </div>
-
         </section>
 
+        {/* タグ */}
         <section>
           <h2 className="text-lg mb-2 text-text">タグ</h2>
           <div className="flex gap-2 overflow-x-auto no-scrollbar">
             {tags.map((t) => (
               <Link
                 key={t.slug}
-                href={'/recipes?tag=${encodeURIComponent(t.name)}'}
+                href={`/recipes?tag=${encodeURIComponent(t.name)}`} // ← バッククォート
                 className="shrink-0 px-3 h-9 rounded-full border border-main/30 bg-white text-sm flex items-center hover:bg-base"
-              >#{t.name}</Link>
+              >
+                #{t.name}
+              </Link>
             ))}
           </div>
         </section>
 
+        {/* レシピ（おすすめ|すべて タブ） */}
         <section>
-          <h2 className="text-lg mb-2 text-text">おすすめの料理</h2>
-          {recipes.length === 0 ? (
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg mb-2 text-text">レシピ</h2>
+            <div className="flex gap-2 text-sm">
+              <Tab to={route ? route("explore", { tab: "recommended" }) : "/?tab=recommended"} active={tab === "recommended"}>
+                おすすめ
+              </Tab>
+              <Tab to={route ? route("explore", { tab: "all" }) : "/?tab=all"} active={tab === "all"}>
+                すべて
+              </Tab>
+            </div>
+          </div>
+
+          {(!recipes || !recipes.data || recipes.data.length === 0) ? (
             <p className="text-sm text-gray-500">まだレシピが追加されてありません</p>
-            ):(
+          ) : (
+            <>
               <div className="grid grid-cols-2 gap-3">
-                {recipes.map(r => (
-                  <div key={r.id} classNaame="rounded-xl overflow-hidden shadow bg-white">
-                    <img src={r.main_path} alt={r.title} className="w-full h-24 object-cover"/>
-                    <div className="p-2 text-sm">{r.title}</div>
+                {recipes.data.map((r) => (
+                  <div
+                    key={r.id}
+                    className={`rounded-lg overflow-hidden border bg-white ${
+                      Number(highlight) === r.id ? "ring-2 ring-amber-400" : ""
+                    }`}
+                  >
+                    <img src={r.main_image_path} alt={r.title} className="w-full h-24 object-cover" />
+                    <div className="p-2">
+                      <p className="text-sm font-medium line-clamp-1">{r.title}</p>
+                      <p className="text-xs text-gray-500 line-clamp-2">{r.description}</p>
+                    </div>
                   </div>
                 ))}
               </div>
-            )}
-        </section>
-      </div> 
 
+              {recipes.next_page_url && (
+                <div className="mt-2">
+                  <Link href={recipes.next_page_url} preserveScroll preserveState className="block text-center text-sm text-amber-600">
+                    もっと見る
+                  </Link>
+                </div>
+              )}
+            </>
+          )}
+        </section>
+      </div>
     </AppShell>
   );
 }

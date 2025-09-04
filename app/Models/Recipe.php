@@ -15,6 +15,7 @@ class Recipe extends Model
         'total_minutes',
         'main_image_path',
         'is_favorite',
+        'is_recommended',
     ];
     
     public function user(){ return $this->belongsTo(User::class);}
