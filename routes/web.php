@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
 
 Route::get('/welcome', function () {
     return Inertia::render('Welcome', [
@@ -31,6 +33,10 @@ Route::middleware(['auth','verified'])->group(function (){
     Route::get('/',function() {
         return Inertia::render('Home/Index');
     })->name('home');
+});
+
+Route::middleware(['auth','verified'])->group(function (){
+    Route::get('/',[HomeController::class,'index'])->name('home');
 });
 
 require __DIR__.'/auth.php';

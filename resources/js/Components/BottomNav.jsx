@@ -6,8 +6,8 @@ import { faClock, faPlus, faHeart, faSearch } from "@fortawesome/free-solid-svg-
 
 const items = [
     { href:"/", label:"調べる",icon:faSearch, match:"/"},
+    { href:"/view", label:"閲覧履歴",icon:faClock, match:"/view"},
     { href:"/add", label:"追加する",icon:faPlus, match:"/add"},
-        { href:"/view", label:"閲覧履歴",icon:faClock, match:"/view"},
     { href:"/favorite", label:"お気に入り",icon:faHeart, match:"/favorite"},
    // { href:"/share", label:"共有",icon:"", match:"/share"},
 ];
