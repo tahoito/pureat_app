@@ -14,7 +14,7 @@ export default function HomeIndex() {
     <AppShell title="ホーム">
       <Head title="ホーム" />
       
-      <div className="p-4 space-y-6">
+      <div className="p-6 space-y-6">
         <form className="relative"
           onSubmit={(e) => {
             e.preventDefault();
@@ -38,18 +38,20 @@ export default function HomeIndex() {
             {categories.slice(0,9).map((c)=>(
               <Link 
                 key={c.name}
-                href={'/recipes?category=${encodeURLComponent(c.name)}'}
+                href={'/recipes?category=${encodeURIComponent(c.name)}'}
                 className="relative h-16 rounded-xl border border-main/30 overflow-hidden group"
               >
                 <img
                   src={c.image_url}
                   alt={c.name}
-                  className="absolute inset-0 w-full object-cover transition-transform duration-300 group-hover::scale-105"
-                  loading="lazy"
+                  className="absolute inset-0 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  loading="eager"
+                  decoding="async"
                 />
-                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/50 to-transparent" />
-                <div className="absolute left-2 bottom-2 text-text text-xs font-semibold">{c.icon}</div>
-                <div className="mt-1">{c.name}</div>
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 to-transparent" />
+                <span className="absolute left-2 bottom-2 z-10 text-white text-xs font-semibold drop-shadow">{c.icon}
+                  {c.name}
+                </span>
               </Link>
             ))}
           </div>
