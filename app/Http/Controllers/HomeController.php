@@ -11,7 +11,7 @@ class HomeController extends Controller
     {
         return Inertia::render('Home/Index',[
             'categories' => Category::orderBy('name')->take(9)->get(['name','image_url']),
-            'tags' => Tag::orderBy('name')->take(12)->get(['name','slug']),
+            'tags' => Tag::orderBy('name')->get(['name','slug']),
         ]);
     }
 

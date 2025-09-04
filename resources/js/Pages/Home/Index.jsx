@@ -8,7 +8,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 export default function HomeIndex() {
 
   const { props } = usePage();
-  const { categories = [], tags = []} = usePage().props;
+  const { categories = [], tags = [], recipes = []} = usePage().props;
 
   return (
     <AppShell title="ホーム">
@@ -64,13 +64,28 @@ export default function HomeIndex() {
             {tags.map((t) => (
               <Link
                 key={t.slug}
-                href={'/recipes?tag=${encodeURIComponent(t)}'}
+                href={'/recipes?tag=${encodeURIComponent(t.name)}'}
                 className="shrink-0 px-3 h-9 rounded-full border border-main/30 bg-white text-sm flex items-center hover:bg-base"
-              >{t.name}</Link>
+              >#{t.name}</Link>
             ))}
           </div>
         </section>
 
+        <section>
+          <h2 className="text-lg mb-2 text-text">おすすめの料理</h2>
+          {recipes.length === 0 ? (
+            <p className="text-sm text-gray-500">まだレシピが追加されてありません</p>
+            ):(
+              <div className="grid grid-cols-2 gap-3">
+                {recipes.map(r => (
+                  <div key={r.id} classNaame="rounded-xl overflow-hidden shadow bg-white">
+                    <img src={r.main_path} alt={r.title} className="w-full h-24 object-cover"/>
+                    <div className="p-2 text-sm">{r.title}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+        </section>
       </div> 
 
     </AppShell>

@@ -31,7 +31,7 @@ export default function BottomNav(){
                     <Link
                         href={i.href}
                         className={`h-[64px] w-full flex flex-col items-center justify-center
-                        ${active ? "text-gray font-medium" : "text-base-600"} hover:bg-base`}
+                        ${active ? "bg-main text-gray-800 font-medium" : "bg-main text-white-600"} hover:bg-main-100`}
                     >
                 <FontAwesomeIcon icon={i.icon} className="text-2xl" />
                 <span className="text-[10px] mt-0.5">{i.label}</span>
