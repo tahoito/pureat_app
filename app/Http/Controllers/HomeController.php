@@ -2,24 +2,16 @@
 
 namespace App\Http\Controllers;
 use Inertia\Inertia;
+use App\Models\Category;   
+use App\Models\Tag;
 
 class HomeController extends Controller
 {
     public function index()
     {
         return Inertia::render('Home/Index',[
-            'categories' => [
-                ['name' => '肉料理','image_url'=> '/images/niku.jpeg'],
-                ['name' => '魚料理','image_url'=> '/images/sakana.jpeg'],
-                ['name' => '野菜料理','image_url'=> '/images/yasai.png'],
-                ['name' => 'ご飯系','image_url'=> '/images/gohan.jpeg'],
-                ['name' => '麺類','image_url'=> '/images/men.jpeg'],
-                ['name' => 'スープ系','image_url'=> '/images/soup.jpeg'],
-                ['name' => 'サラダ','image_url'=> '/images/salad.jpeg'],
-                ['name' => 'スイーツ','image_url'=> '/images/sweets.jpeg'],
-                ['name' => 'その他','image_url'=> '/images/others.jpeg'],
-            ],
-            'tag' => ['時短','節約','簡単','朝食'],
+            'categories' => Category::orderBy('name')->take(9)->get(['name','image_url']),
+            'tags' => Tag::orderBy('name')->take(12)->get(['name','slug']),
         ]);
     }
 

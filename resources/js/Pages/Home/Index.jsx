@@ -8,7 +8,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 export default function HomeIndex() {
 
   const { props } = usePage();
-  const { categories = [], tags = []} = props;
+  const { categories = [], tags = []} = usePage().props;
 
   return (
     <AppShell title="ホーム">
@@ -60,10 +60,16 @@ export default function HomeIndex() {
 
         <section>
           <h2 className="text-lg mb-2 text-text">タグ</h2>
+          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+            {tags.map((t) => (
+              <Link
+                key={t.slug}
+                href={'/recipes?tag=${encodeURIComponent(t)}'}
+                className="shrink-0 px-3 h-9 rounded-full border border-main/30 bg-white text-sm flex items-center hover:bg-base"
+              >{t.name}</Link>
+            ))}
+          </div>
         </section>
-
-
-
 
       </div> 
 
