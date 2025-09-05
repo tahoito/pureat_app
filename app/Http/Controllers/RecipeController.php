@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Recipe;
+use Illuminate\Support\Facades\Storage; 
 class RecipeController extends Controller
 {
     public function store(Request $request)
@@ -32,7 +33,9 @@ class RecipeController extends Controller
             'is_recommended'  => 0,
         ]);
 
-        return redirect()->route('explore',['tab' => 'all', 'highlight' => $recipe->id])
-            -with('flash',['type' => 'success', 'message' => 'レシピ追加完了']);
+    return redirect()
+        ->route('explore', ['tab' => 'all', 'highlight' => $recipe->id])
+        ->with('flash', ['type' => 'success', 'message' => 'レシピを追加したよ']);
+
     }
 }
