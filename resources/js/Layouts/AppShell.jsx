@@ -3,10 +3,10 @@ import BottomNav from "@/Components/BottomNav";
 
 export default function AppShell({ title, children }) {
   return (
-    <div className="fixed inset-0 bg-base text-text">
+    <div className="min-h-svh flex flex-col bg-base text-text">
       
       {/* メイン。下ナビの分だけ余白を足して被らないようにする */}
-      <main className="flex-1 overflow-y-auto pb-[80px]">
+      <main className="flex-1 overflow-y-auto pb-[calc(64px+env(safe-area-inset-bottom))]">
         {children}
       </main>
 

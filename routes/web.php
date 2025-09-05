@@ -22,6 +22,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // 追加ページ（見た目だけならこれでOK）
     Route::get('/add', fn () => Inertia::render('Add/Index'))->name('recipes.add');
+    Route::get('/recipes',[RecipeController::class,'store'])->name('recipes.store');
 
     // ダッシュボード（必要なら）
     Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
