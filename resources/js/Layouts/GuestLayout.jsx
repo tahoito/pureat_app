@@ -2,9 +2,9 @@ export default function Guest({ children }) {
   return (
     <div className="min-h-[100dvh] bg-base flex items-center justify-center p-4">
       <div className="w-full max-w-[390px]">
-        {/* タイトル（recipe） */}
+        {/* タイトル（Tastie） */}
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold text-main">recipe</h1>
+          <h1 className="text-2xl font-semibold text-main">Tastie</h1>
         </div>
 
         {/* カード枠 */}
