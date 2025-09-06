@@ -117,8 +117,9 @@ export default function AddPage() {
         <div className="p-4 pb-28 space-y-5 bg-white">
         <section className="p-4 space-y-3">
           <div>
-            <label className="block text-lg text-text text-center">料理名</label>
+            <label htmlFor="title" className="block text-lg text-text text-center">料理名</label>
             <input
+                id="title" name="title"
               className="mt-1 w-full rounded-lg border p-2"
               placeholder="和風パスタ"
               value={data.title}
@@ -129,8 +130,9 @@ export default function AddPage() {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm text-gray-600">人数</label>
+              <label htmlFor="servings" className="block text-sm text-gray-600">人数</label>
               <input
+                id="servings" name="servings"
                 type="number" min="1"
                 className="mt-1 w-full rounded-lg border p-2"
                 value={data.servings}
@@ -140,8 +142,9 @@ export default function AddPage() {
               {errors.servings && <p className="mt-1 text-xs text-red-600">{errors.servings}</p>}
             </div>
             <div>
-              <label className="block text-sm text-gray-600">調理時間(分)</label>
+              <label htmlFor="total_minutes" className="block text-sm text-gray-600">調理時間(分)</label>
               <input
+                id="total_minutes" name="total_minutes"
                 type="number" min="0"
                 className="mt-1 w-full rounded-lg border p-2"
                 value={data.total_minutes}
@@ -154,8 +157,9 @@ export default function AddPage() {
         </section>
 
         <section className="p-4 space-y-3">
-            <label className="block text-sm text-gray-600">カテゴリー</label>
+            <label htmlFor="category_id" className="block text-sm text-gray-600">カテゴリー</label>
             <select 
+                id="category_id" name="category_id"
                 className="mt-1 w-full rounded-lg border p-2"
                 value={data.category_id}
                 onChange={(e) => setData("category_id",e.target.value)}
