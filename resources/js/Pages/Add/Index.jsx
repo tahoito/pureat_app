@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export default function AddPage() {
+  const { categories = [], tags =[] } = usePage().props ?? {};
   const { data, setData, post, processing, errors } = useForm({
     title: "",
     description: "",
     servings: "",
     total_minutes: "",
+    category_id:"",
+    tag_ids:[],
+    ingredients:[
+        { name: "", amount:""},
+        { name: "", amount:""}
+    ],
+    steps:["",""],
     main_image: null,
   });
 
@@ -25,6 +33,27 @@ export default function AddPage() {
 
   // Ziggy が無くても動くようにフォールバック
   const storeUrl = typeof route === "function" ? route("recipes.store") : "/recipes";
+
+  const toggleTag = (id) => {
+    const s = new Set(data.tag_ids);
+    s.has(id) ? s.delete(id) : s.add(id);
+    setData("tag_ids",Array.from(s))
+  };
+
+  const addIngredient = () =>
+    setData("ingredients",[...data.ingredients,{name:"",amount:""}]);
+  const changeIngredient = (idx,key,val)=>{
+    const next = data.ingredients.slice();
+    next[idx] = {...next[idx],[key]:val};
+    setData("ingredients",next);
+  };
+
+  const addStep = () => setData("steps",[...data.steps,""]);
+  const changeStep = (idx,val) => {
+    const next = data.steps.slice();
+    next[idx] = val;
+    setData("steps",next);
+  };
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -49,7 +78,7 @@ export default function AddPage() {
             disabled={processing}
             className="px-3 py-1.5 rounded-lg bg-base text-lg font-bold active:opacity-90 disabled:opacity-60"
           >
-            追加
+            保存
           </button>
         </div>
       </header>
@@ -124,6 +153,41 @@ export default function AddPage() {
           </div>
         </section>
 
+        <section className="p-4 space-y-3">
+            <label className="block text-sm text-gray-600">カテゴリー</label>
+            <select 
+                className="mt-1 w-full rounded-lg border p-2"
+                value={data.category_id}
+                onChange={(e) => setData("category_id",e.target.value)}
+            >
+                <option value="">選択してください</option>
+                {categories.map(c => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+                {errors.category_id && <p className="text-xs text-red-600">{errors.category_id}</p>}
+            </select>
+        </section>
+
+        <section className="p-4 space-y-3">
+            <label className="block text-sm text-gray-600">タグ</label>
+            <div className="flex flex-wrap gap-2">
+                {tags.map(t => {
+                    const active = data.tag_ids.includes(t.id);
+                    return(
+                        <button 
+                            type="button"
+                            key={t.id}
+                            onClick={()=>toggleTag(t.id)}
+                            className={`px-3 py-1 rounded-full border text-sm
+                            ${active ? "bg-amber-500 border-amber-500 text-white" : "bg-white border-main/30 text-gray-700"}`}
+                        >
+                        #{t.name}
+                    </button>
+                    );
+                })}
+            </div>
+        </section>
+
         {/* 材料 */}
         <section className="p-4 space-y-3">
           <div className="flex justify-center">
@@ -131,18 +195,28 @@ export default function AddPage() {
           </div>
 
           <div className="space-y-2">
-            <div className="grid grid-cols-[1fr_88px] gap-2">
-              <input className="rounded-lg border p-2" placeholder="例：スパゲッティ" />
-              <input className="rounded-lg border p-2" placeholder="100g" />
+            {data.ingredients.map((ing, idx) => (
+            <div key={idx} className="grid grid-cols-[1fr_100px] gap-2">
+                <input
+                className="rounded-lg border p-2"
+                placeholder="例：スパゲッティ"
+                value={ing.name}
+                onChange={(e) => changeIngredient(idx, "name", e.target.value)}
+                />
+                <input
+                className="rounded-lg border p-2"
+                placeholder="100g"
+                value={ing.amount ?? ""}
+                onChange={(e) => changeIngredient(idx, "amount", e.target.value)}
+                />
             </div>
-            <div className="grid grid-cols-[1fr_88px] gap-2">
-              <input className="rounded-lg border p-2" placeholder="例：醤油" />
-              <input className="rounded-lg border p-2" placeholder="大さじ1" />
-            </div>
+            ))}
           </div>
 
           <div className="flex justify-center">
-            <button type="button" className="text-amber-600 text-sm">＋行を追加</button>
+            <button type="button" className="text-amber-600 text-sm"
+                onClick={addIngredient}>
+            ＋行を追加</button>
           </div>
         </section>
 
@@ -153,18 +227,25 @@ export default function AddPage() {
           </div>
 
           <ol className="space-y-2">
-            <li className="flex items-start gap-2">
-              <span className="mt-2 w-6 h-6 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center">1</span>
-              <textarea rows={2} className="flex-1 rounded-lg border p-2" placeholder="例：パスタを茹でる" />
+            {data.steps.map((s, idx) => (
+            <li key={idx} className="flex items-start gap-2">
+                <span className="mt-2 w-6 h-6 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center">
+                {idx + 1}
+                </span>
+                <textarea
+                rows={2}
+                className="flex-1 rounded-lg border p-2"
+                placeholder="例：パスタを茹でる"
+                value={s}
+                onChange={(e) => changeStep(idx, e.target.value)}
+                />
             </li>
-            <li className="flex items-start gap-2">
-              <span className="mt-2 w-6 h-6 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center">2</span>
-              <textarea rows={2} className="flex-1 rounded-lg border p-2" placeholder="例：ソースを作る" />
-            </li>
+            ))}
           </ol>
 
           <div className="flex justify-center">
-            <button type="button" className="text-amber-600 text-sm">+ 手順を追加</button>
+            <button type="button" className="text-amber-600 text-sm"
+            onClick={addStep}>+ 手順を追加</button>
           </div>
         </section>
         </div>

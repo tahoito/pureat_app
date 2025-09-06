@@ -12,5 +12,6 @@ class Step extends Model
         'body',
         'path_photo',
     ];
+    public $timestamps = false;
     public function recipe(){ return $this->belongsTo(Recipe::class);}
 }

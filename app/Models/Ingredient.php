@@ -13,6 +13,6 @@ class Ingredient extends Model
         'quantity',
     ];
 
-    public function recipe(){ return $this-belongsTo(Recipe::class);}
-    
+    public function recipe(){ return $this->belongsTo(Recipe::class);}
+
 }

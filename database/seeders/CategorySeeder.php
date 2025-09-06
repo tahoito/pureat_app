@@ -21,7 +21,7 @@ class CategorySeeder extends Seeder
             ['name' => 'その他','image_url' => '/images/others.jpeg'],
         ];
 
-        foreach ($items as $i) {
+        foreach ($items as $idx => $i) {
             $i['sort_order'] = $idx + 1; // 1,2,3...
             \App\Models\Category::updateOrCreate(['name' => $i['name']], $i);
         }
