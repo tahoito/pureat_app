@@ -15,7 +15,7 @@ export default function AddPage() {
     total_minutes: "",
     category_id:"",
     tag_ids:[],
-    tag_name:[],
+    tag_names:[],
     ingredients:[
         { name: "", amount:""},
         { name: "", amount:""}
@@ -25,6 +25,8 @@ export default function AddPage() {
   });
 
   const [tagInput, setTagInput] = useState("");
+  const TAG_ACTIVE   = "px-3 py-1 rounded-full border text-sm bg-amber-500 border-amber-500 text-white";
+  const TAG_INACTIVE = "px-3 py-1 rounded-full border text-sm bg-white border-main/30 text-gray-700";
   const addTagFromInput = () => {
     const name = tagInput.trim();
     if(!name) return;
@@ -198,8 +200,7 @@ export default function AddPage() {
             return (
                 <button
                 type="button" key={t.id} onClick={() => toggleTag(t.id)}
-                className={`px-3 py-1 rounded-full border text-sm
-                    ${active ? "bg-amber-500 border-amber-500 text-white" : "bg-white border-main/30 text-gray-700"}`}
+                className={active ? TAG_ACTIVE : TAG_INACTIVE}
                 >
                 #{t.name}
                 </button>
@@ -231,7 +232,7 @@ export default function AddPage() {
         {(Array.isArray(data.tag_names) && data.tag_names.length > 0) && (
         <div className="flex flex-wrap gap-2">
             {data.tag_names.map((name, i) => (
-            <span key={i} className="px-3 py-1 rounded-full border text-sm bg-white border-amber-300 text-amber-700">
+            <span key={i} className={TAG_ACTIVE}>
                 #{name}
             </span>
             ))}
