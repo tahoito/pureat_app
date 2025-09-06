@@ -5,7 +5,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export default function AddPage() {
-  const { categories = [], tags =[] } = usePage().props ?? {};
+  const page = usePage();
+  const categories = Array.isArray(page?.props?.categories) ? page.props.categories : [];
+  const tags       = Array.isArray(page?.props?.tags)       ? page.props.tags       : [];
   const { data, setData, post, processing, errors } = useForm({
     title: "",
     description: "",
@@ -13,6 +15,7 @@ export default function AddPage() {
     total_minutes: "",
     category_id:"",
     tag_ids:[],
+    tag_name:[],
     ingredients:[
         { name: "", amount:""},
         { name: "", amount:""}
@@ -20,6 +23,21 @@ export default function AddPage() {
     steps:["",""],
     main_image: null,
   });
+
+  const [tagInput, setTagInput] = useState("");
+  const addTagFromInput = () => {
+    const name = tagInput.trim();
+    if(!name) return;
+    const found = tags.find(t => t.name.toLowerCase() === name.toLowerCase());
+    if(found){
+        toggleTag(found.id);
+    }else{
+        if(!data.tag_names.some(n=> n.toLowerCase()===name.toLowercase)){
+            setData("tag_names",[...data.tag_names,name]);
+        }
+    }
+    setTagInput("");
+  }
 
   const [preview, setPreview] = useState("");
 
@@ -175,21 +193,50 @@ export default function AddPage() {
         <section className="p-4 space-y-3">
             <label className="block text-sm text-gray-600">タグ</label>
             <div className="flex flex-wrap gap-2">
-                {tags.map(t => {
-                    const active = data.tag_ids.includes(t.id);
-                    return(
-                        <button 
-                            type="button"
-                            key={t.id}
-                            onClick={()=>toggleTag(t.id)}
-                            className={`px-3 py-1 rounded-full border text-sm
-                            ${active ? "bg-amber-500 border-amber-500 text-white" : "bg-white border-main/30 text-gray-700"}`}
-                        >
-                        #{t.name}
-                    </button>
-                    );
-                })}
-            </div>
+            {(tags ?? []).map(t => {
+            const active = (data.tag_ids ?? []).includes(t.id);
+            return (
+                <button
+                type="button" key={t.id} onClick={() => toggleTag(t.id)}
+                className={`px-3 py-1 rounded-full border text-sm
+                    ${active ? "bg-amber-500 border-amber-500 text-white" : "bg-white border-main/30 text-gray-700"}`}
+                >
+                #{t.name}
+                </button>
+            );
+        })}
+    </div>
+
+    {/* 新規タグ入力 */}
+    <div className="flex items-center gap-2">
+        <input
+        id="tag_input" name="tag_input"
+        className="flex-1 rounded-lg border p-2"
+        placeholder="タグを追加"
+        value={tagInput}
+        onChange={(e) => setTagInput(e.target.value)}
+        onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ',') {
+                    e.preventDefault();
+                    addTagFromInput();
+                    }
+                }}
+            />
+            <button type="button" onClick={addTagFromInput}
+            className="px-3 py-2 rounded-lg border">
+            追加
+            </button>
+        </div>
+
+        {(Array.isArray(data.tag_names) && data.tag_names.length > 0) && (
+        <div className="flex flex-wrap gap-2">
+            {data.tag_names.map((name, i) => (
+            <span key={i} className="px-3 py-1 rounded-full border text-sm bg-white border-amber-300 text-amber-700">
+                #{name}
+            </span>
+            ))}
+        </div>
+        )}
         </section>
 
         {/* 材料 */}
