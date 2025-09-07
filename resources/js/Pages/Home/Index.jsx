@@ -115,11 +115,13 @@ export default function HomeIndex() {
                       Number(highlight) === r.id ? "ring-2 ring-amber-400" : ""
                     }`}
                   >
-                    <img src={r.main_image_path} alt={r.title} className="w-full h-24 object-cover" />
-                    <div className="p-2">
-                      <p className="text-sm font-medium line-clamp-1">{r.title}</p>
-                      <p className="text-xs text-gray-500 line-clamp-2">{r.description}</p>
-                    </div>
+                    <Link href={route('recipes.show',r.id)} className=" block rounded-lg overflow-hidden border bg-white">
+                      <img src={r.main_image_path} alt={r.title} className="w-full h-24 object-cover" />
+                      <div className="p-2">
+                        <p className="text-sm font-medium line-clamp-1">{r.title}</p>
+                        <p className="text-xs text-gray-500 line-clamp-2">{r.description}</p>
+                      </div>
+                    </Link>
                   </div>
                 ))}
               </div>
