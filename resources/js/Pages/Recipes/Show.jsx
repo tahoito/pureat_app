@@ -63,31 +63,25 @@ export default function RecipeShow() {
                             </Link>
                         ))}
                     </div>
-
-                    {recipe.description && (
-                        <p className="mt-3 text-sm text-text-700 leading-relaxed whitespace-pre-wrap text-center">
-                            {recipe.description}
-                        </p>
-                    )}
                 </div>
 
                 {Array.isArray(recipe.ingredients) && recipe.ingredients.length > 0 && (
                     <section className="px-4 py-4">
-                        <div className="max-w-md mx-auto">
-                            <h2 className="flex items-center justify-center gap-2 text-lg font-semibold">
+                        <div className="w-full mx-auto max-w-[18rem]">
+                            <h2 className="flex items-center justify-center gap-2 text-xl font-semibold">
                                 材料
                                 {typeof recipe.servings === "number" && (
-                                    <span className="text-sm text-gray-700 flex items-center gap-1">
-                                        <FontAwesomeIcon icon={faUser} />
+                                    <span className="text-xs text-gray-500/80 flex items-center gap-1">
+                                        <FontAwesomeIcon icon={faUser} className="text-[12px]" />
                                         {recipe.servings}人分
                                     </span>
                                 )}
                             </h2>
-                            <ul className="mt-2 grid grid-cols-2 gap-y-1 text-sm">
+                            <ul className="mt-2 grid grid-cols-2 gap-y-1.5 text-sm leading-tight">
                                 {recipe.ingredients.map((ing, i) => (
                                     <React.Fragment key={ing.id ?? i}>
                                         <li className="text-text">{ing.name}</li>
-                                        <li className="text-text text-right">{ing.amount}</li>
+                                        <li className="text-text text-right font-mono">{ing.amount}</li>
                                     </React.Fragment>
                                 ))}
                             </ul>
@@ -97,20 +91,20 @@ export default function RecipeShow() {
 
                 {Array.isArray(recipe.steps) && recipe.steps.length > 0 && (
                     <section className="px-4 py-4">
-                        <div className="max-w-md mx-auto">
-                            <h2 className="flex items-center justify-center gap-2 text-lg font-semibold">
+                        <div className="w-full mx-auto max-w-[18rem]">
+                            <h2 className="flex items-center justify-center gap-2 text-xl font-semibold">
                                 作り方
                                 {typeof recipe.total_minutes === "number" && (
-                                    <span className="text-sm text-gray-700 flex items-center gap-1">
-                                        <FontAwesomeIcon icon={faClock} />
+                                    <span className="text-xs text-gray-500/80 flex items-center gap-1">
+                                        <FontAwesomeIcon icon={faClock} className="text-[11px]"/>
                                         {recipe.total_minutes}分
                                     </span>
                                 )}
                             </h2>
-                            <ol className="mt-2 space-y-3">
+                            <ol className="mt-2 space-y-2">
                                 {recipe.steps.map((st, i) => (
                                     <li key={st.id ?? i} className="flex items-baseline gap-3">
-                                        <span className="mt-2 w-6 h-6 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center">
+                                        <span className="flex-none inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-500 text-white text-xs leading-none">
                                             {i + 1}
                                         </span>
                                         <p className="text-sm text-gray-800 leading-relaxed">{st.body}</p>

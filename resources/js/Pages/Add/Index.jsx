@@ -34,7 +34,7 @@ export default function AddPage() {
     if(found){
         toggleTag(found.id);
     }else{
-        if(!data.tag_names.some(n=> n.toLowerCase()===name.toLowercase)){
+        if(!data.tag_names.some(n=> n.toLowerCase()===name.toLowerCase)){
             setData("tag_names",[...data.tag_names,name]);
         }
     }
@@ -147,33 +147,6 @@ export default function AddPage() {
             />
             {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title}</p>}
           </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label htmlFor="servings" className="block text-sm text-gray-600">人数</label>
-              <input
-                id="servings" name="servings"
-                type="number" min="1"
-                className="mt-1 w-full rounded-lg border p-2"
-                value={data.servings}
-                onChange={(e) => setData("servings", e.target.value)}
-                placeholder="2"
-              />
-              {errors.servings && <p className="mt-1 text-xs text-red-600">{errors.servings}</p>}
-            </div>
-            <div>
-              <label htmlFor="total_minutes" className="block text-sm text-gray-600">調理時間(分)</label>
-              <input
-                id="total_minutes" name="total_minutes"
-                type="number" min="0"
-                className="mt-1 w-full rounded-lg border p-2"
-                value={data.total_minutes}
-                onChange={(e) => setData("total_minutes", e.target.value)}
-                placeholder="15"
-              />
-              {errors.total_minutes && <p className="mt-1 text-xs text-red-600">{errors.total_minutes}</p>}
-            </div>
-          </div>
         </section>
 
         <section className="p-4 space-y-3">
@@ -188,8 +161,8 @@ export default function AddPage() {
                 {categories.map(c => (
                     <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
-                {errors.category_id && <p className="text-xs text-red-600">{errors.category_id}</p>}
             </select>
+            {errors.category_id && <p className="text-xs text-red-600">{errors.category_id}</p>}
         </section>
 
         <section className="p-4 space-y-3">
@@ -239,6 +212,36 @@ export default function AddPage() {
         </div>
         )}
         </section>
+
+        <section className="p-4 space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label htmlFor="servings" className="block text-sm text-gray-600">人数</label>
+              <input
+                id="servings" name="servings"
+                type="number" min="1"
+                className="mt-1 w-full rounded-lg border p-2"
+                value={data.servings}
+                onChange={(e) => setData("servings", e.target.value)}
+                placeholder="2"
+              />
+              {errors.servings && <p className="mt-1 text-xs text-red-600">{errors.servings}</p>}
+            </div>
+            <div>
+              <label htmlFor="total_minutes" className="block text-sm text-gray-600">調理時間(分)</label>
+              <input
+                id="total_minutes" name="total_minutes"
+                type="number" min="0"
+                className="mt-1 w-full rounded-lg border p-2"
+                value={data.total_minutes}
+                onChange={(e) => setData("total_minutes", e.target.value)}
+                placeholder="15"
+              />
+              {errors.total_minutes && <p className="mt-1 text-xs text-red-600">{errors.total_minutes}</p>}
+            </div>
+          </div>
+        </section>
+
 
         {/* 材料 */}
         <section className="p-4 space-y-3">
