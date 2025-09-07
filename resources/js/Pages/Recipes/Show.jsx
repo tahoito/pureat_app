@@ -2,7 +2,7 @@ import React from "react";
 import { Head, Link, usePage } from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faClock, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faClock, faHeart, faUser } from "@fortawesome/free-solid-svg-icons";
 
 export default function RecipeShow() {
     const { recipe, isFavorite = false} = usePage().props;
@@ -12,7 +12,11 @@ export default function RecipeShow() {
         <AppShell title={recipe.title} active="">
             <Head title={recipe.title}/>
 
-            <header className="sticky top-0 z-30 bg-main/95 backdrop-blur border-b">
+            <header className="sticky top-0 z-30 
+                bg-main/90 text-white 
+                backdrop-blur 
+                ot-[env(safe-are-inset-top)]
+                ">
                 <div class="h-12 px-3 flex items-center justify-between">
                     <Link href={typeof route === "function" ? route("explore") : "/"} className="p-2 -ml-2">
                         <FontAwesomeIcon  icon={faArrowLeft} className="text-xl text-base" />

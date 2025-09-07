@@ -85,7 +85,7 @@ export default function AddPage() {
       <Head title="レシピを追加" />
 
       {/* ヘッダー */}
-      <header className="sticky top-0 z-30 bg-main/95 backdrop-blur border-b">
+      <header className="sticky top-0 z-30 bg-main/90 backdrop-blur supports-[backdrop-filter]:bg-main/60 border-b">
         <div className="h-12 px-3 flex items-center justify-between">
           <Link href={typeof route === "function" ? route("explore") : "/"} className="p-2 -ml-2" aria-label="閉じる">
             <FontAwesomeIcon icon={faXmark} className="text-xl text-base" />
