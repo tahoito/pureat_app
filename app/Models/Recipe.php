@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Recipe extends Model
 {
@@ -13,7 +14,7 @@ class Recipe extends Model
         'description',
         'servings',
         'total_minutes',
-        'main_image_path',
+        'main_image',
         'is_favorite',
         'is_recommended',
     ];
@@ -23,5 +24,24 @@ class Recipe extends Model
     public function ingredients(){ return $this->hasMany(Ingredient::class)->orderBy('position');}
     public function steps(){ return $this->hasMany(Step::class)->orderBy('position');}
     public function tags(){ return $this->belongsToMany(Tag::class, 'recipe_tag');}
+
+
+    protected $appends = ['main_image_path'];
+
+    public function getMainImagePathAttribute()
+    {
+        return filled($this->main_image)
+            ? Storage::disk('public')->url($this->main_image) 
+            : asset('images/placeholder.jpeg');
+    }
+
+    
+    public function setMainImageAttribute($value)
+    {
+        $this->attributes['main_image'] = str_starts_with($value, 'public/')
+            ? substr($value, 7) 
+            : $value;
+    }
+    
 
 }

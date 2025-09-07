@@ -100,7 +100,7 @@ export default function AddPage() {
             type="submit"
             form="recipeForm"
             disabled={processing}
-            className="px-3 py-1.5 rounded-lg bg-base text-lg font-bold active:opacity-90 disabled:opacity-60"
+            className="px-3 py-1.5 text-text rounded-lg bg-base text-lg font-bold active:opacity-90 disabled:opacity-60"
           >
             保存
           </button>
@@ -111,7 +111,7 @@ export default function AddPage() {
       <form id="recipeForm" onSubmit={onSubmit} className="p-4 pb-28 space-y-5">
 
         {/* いちばん上の写真エリア */}
-        <section className="rounded-2xl overflow-hidden bg-gray-100">
+        <section className="pt-12 rounded-2xl overflow-hidden bg-gray-100">
           <label htmlFor="main-image" className="block cursor-pointer" title="画像を選択">
             <div className="relative w-full aspect-[4/3] bg-gray-100">
               {preview ? (

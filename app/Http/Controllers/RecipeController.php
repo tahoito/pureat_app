@@ -41,14 +41,13 @@ class RecipeController extends Controller
             'steps.*'     => ['required','string'],
         ]);
 
-        // 画像保存
-        $imageUrl = null;
+        
+        $path = null;
         if ($request->hasFile('main_image')) {
             $path = $request->file('main_image')->store('recipes', 'public');
-            $imageUrl = Storage::url($path);
         }
 
-        // すべてトランザクションで
+        
         $recipe = DB::transaction(function () use ($request, $validated, $imageUrl) {
             $recipe = Recipe::create([
                 'user_id'         => $request->user()->id,
@@ -113,7 +112,7 @@ class RecipeController extends Controller
             'tags:id,name,slug',
             'ingredients' => fn($q) => $q->orderBy('position')->select('id','recipe_id','name','amount','position'),
             'steps'       => fn($q) => $q->orderBy('position')->select('id','recipe_id','body','position'),
-            'user:id,name',   // ★ 追加（author用）
+            'user:id,name',   
         ]);
 
         return Inertia::render('Recipes/Show', [
