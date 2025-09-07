@@ -38,31 +38,20 @@ export default function RecipeShow() {
                     <img src={img} alt={recipe.title} className="w-full h-full object-cover" />
                 </div>
 
-                <div className="bg-white border border-main/10 px-4 py-3">
-
-                    <h1 className="text-2xl font-bold text-center">{recipe.title}</h1>
-                    <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
-                        {recipe.category && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-base border border-main/30 text-text-700 text-sm">
-                            {recipe.category.name}
-                        </span>
-                        )}
-                        {Array.isArray(recipe.tags) &&
-                        recipe.tags.length > 0 &&
-                        recipe.tags.map((t) => (
-                            <Link
-                            key={t.id}
-                            href={
-                                typeof route == "function"
-                                ? route("explore", { tag: t.slug })
-                                : `/ ?tag=${encodeURIComponent(t.slug)}`
-                            }
-                            className="px-3 py-1 rounded-full border bg-white border-main/30 text-gray-700 text-sm"
+                <div className="bg-white border border-main/10 px-5 py-7">
+                    <h1 className="text-3xl font-bold text-center">{recipe.title}</h1>
+                    {Array.isArray(recipe.tags) && recipe.tags.length > 0 && (
+                        <div className="mt-3 flex flex-wrap justify-center gap-2">
+                            {recipe.tags.map((t) => (
+                            <span
+                                key={t.id}
+                                className="px-2 py-0.5 rounded-full border border-main/20 bg-white text-gray-600 text-xs"
                             >
-                            #{t.name}
-                            </Link>
-                        ))}
-                    </div>
+                                #{t.name}
+                            </span>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {Array.isArray(recipe.ingredients) && recipe.ingredients.length > 0 && (
