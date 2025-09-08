@@ -18,15 +18,17 @@ function RecipeCard({ r, highlight }) {
       <Link href={typeof route === "function" ? route("recipes.show", r.id) : `/recipes/${r.id}`} className="block">
         {/* ← 両方おなじ高さに統一 */}
         <img src={r.main_image_path} alt={r.title} className="w-full h-24 object-cover" />
-        <div className="p-2 space-y-1">
-          <p className="text-sm font-medium line-clamp-1">{r.title}</p>
-          {hasMinutes && (
-            <div className="flex items-center gap-1 text-xs text-gray-500">
-              <FontAwesomeIcon icon={faClock} className="text-[11px]"/>
-              <span>{ r.total_minutes}分</span>
-            </div>
-          )}
-
+        <div className="p-2">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium line-clamp-1">{r.title}</p>
+            {hasMinutes && (
+              <div className="flex items-center gap-1 text-xs text-gray-500">
+                <FontAwesomeIcon icon={faClock} className="text-[11px]"/>
+                <span>{ r.total_minutes}分</span>
+              </div>
+            )}
+          </div>
+        
           {firstTag && (
             <span className="inline-block px-2 py-0.5 rounded-full border border^main/20 bg-white text-gray-600 text-[11px]">
               #{firstTag.name}
