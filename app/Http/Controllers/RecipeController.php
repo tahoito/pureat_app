@@ -78,6 +78,7 @@ class RecipeController extends Controller
             // 材料
             foreach (($validated['ingredients'] ?? []) as $i => $ing) {
                 if (!trim($ing['name'] ?? '')) continue;
+                $amount = isset($ing['amount']) && trim($ing['amount']) !== '' ? $ing['amount'] : null;
                 Ingredient::create([
                     'recipe_id' => $recipe->id,
                     'name'      => $ing['name'],

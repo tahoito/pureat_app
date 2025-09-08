@@ -10,7 +10,7 @@ class Ingredient extends Model
         'recipe_id',
         'position',
         'name',
-        'quantity',
+        'amount',
     ];
 
     public function recipe(){ return $this->belongsTo(Recipe::class);}

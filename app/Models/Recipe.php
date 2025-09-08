@@ -17,6 +17,7 @@ class Recipe extends Model
         'main_image_path',
         'is_favorite',
         'is_recommended',
+        'amount',
     ];
     
     public function user(){ return $this->belongsTo(User::class);}
@@ -36,7 +37,7 @@ class Recipe extends Model
         if (!empty($this->attributes['main_image_path'])){
             return asset(ltrim($this->attributes['main_image_path'],'/'));
         }
-        
+
         return $value ?: asset('images/placeholder.jpeg');
     }
 

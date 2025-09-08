@@ -67,12 +67,17 @@ export default function RecipeShow() {
                                 )}
                             </h2>
                             <ul className="mt-2 grid grid-cols-2 gap-y-1.5 text-sm leading-tight">
-                                {recipe.ingredients.map((ing, i) => (
-                                    <React.Fragment key={ing.id ?? i}>
+                                {recipe.ingredients.map((ing, i) => {
+                                    const amt = (ing.amount ?? '').toString().trim();
+                                    return (
+                                        <React.Fragment key={ing.id ?? i}>
                                         <li className="text-text">{ing.name}</li>
-                                        <li className="text-text text-right font-mono">{ing.amount}</li>
-                                    </React.Fragment>
-                                ))}
+                                        <li className="text-text text-right font-mono">
+                                            {amt !== '' ? amt : '-'}</li>
+                                        </React.Fragment>
+
+                                    );
+                                })}
                             </ul>
                         </div>
                     </section>
