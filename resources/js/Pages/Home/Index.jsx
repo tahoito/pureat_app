@@ -17,7 +17,7 @@ function RecipeCard({ r, highlight }) {
     >
       <Link href={typeof route === "function" ? route("recipes.show", r.id) : `/recipes/${r.id}`} className="block">
         {/* ← 両方おなじ高さに統一 */}
-        <img src={img} alt={r.title} className="w-full h-24 object-cover" />
+        <img src={r.main_image_path} alt={r.title} className="w-full h-24 object-cover" />
         <div className="p-2 space-y-1">
           <p className="text-sm font-medium line-clamp-1">{r.title}</p>
           {hasMinutes && (

@@ -28,7 +28,7 @@ class RecipeSeeder extends Seeder
             'category_id' => 2,
             'title' => '和風パスタ',
             'description' => '醤油ベースでさっぱりとした和風スパゲッティ',
-            'main_image' => '/images/sample_pasta.webp',
+            'main_image' => '/images/sample_pasta.jpeg',
             'total_minutes' => 20,
             'is_recommended' => true,
         ]);

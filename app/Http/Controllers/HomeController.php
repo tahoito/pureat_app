@@ -20,7 +20,7 @@ class HomeController extends Controller
         $tab = request('tab','all');
 
         $query = Recipe::with(['tags:id,name'])
-            ->select('id','title','description','total_minutes') 
+            ->select('id','title','description','total_minutes','is_recommended','main_image_path') 
             ->latest('id');
            
         if ($tab === 'recommended'){
@@ -33,12 +33,12 @@ class HomeController extends Controller
                     'id'             => $r->id,
                     'title'          => $r->title,
                     'description'    => $r->description,
-                    'main_image'     => $r->main_image_path,
-                    'total_minutes' => $r->total_minutes,
-                    'tags' => $r->tags?->map(fn($t)=>[
-                                    'id'=>$t->id,
-                                    'name'=>$t->name
-                                    ])->values()->all() ?? [],
+                    'main_image_path'=> $r->main_image_path,
+                    'total_minutes'  => $r->total_minutes,
+                    'tags'           => $r->tags
+                                            ->map(fn($t)=>['id'=>$t->id,'name'=>$t->name])
+                                            ->values()
+                                            ->all() ?? [],
                     'is_recommended' => (bool) $r->is_recommended,
                 ];
             });

@@ -32,7 +32,6 @@ class RecipeController extends Controller
             'tag_names'      => ['array'],                      // ★ 新規タグ名
             'tag_names.*'    => ['string','max:30'],
             'main_image'     => ['nullable','image','max:5120'],
-
             'ingredients'            => ['array'],
             'ingredients.*.name'     => ['required_with:ingredients','string','max:255'],
             'ingredients.*.amount'   => ['nullable','string','max:255'],  // 225→255でもOK
@@ -42,13 +41,13 @@ class RecipeController extends Controller
         ]);
 
         
-        $path = null;
-        if ($request->hasFile('main_image')) {
-            $path = $request->file('main_image')->store('recipes', 'public');
-        }
+        $path = $request->hasFile('main_image')
+            ? $request->file('main_image')->store('recipes','public')
+            :null;
 
+        $publicUrl = $path ? Storage::disk('public')->url($path):null;
         
-        $recipe = DB::transaction(function () use ($request, $validated, $imageUrl) {
+        $recipe = DB::transaction(function () use ($request, $validated, $publicUrl) {
             $recipe = Recipe::create([
                 'user_id'         => $request->user()->id,
                 'category_id'     => $validated['category_id'],
@@ -56,7 +55,7 @@ class RecipeController extends Controller
                 'description'     => $validated['description'] ?? null,
                 'servings'        => $validated['servings'] ?? null,
                 'total_minutes'   => $validated['total_minutes'] ?? null,
-                'main_image' => $path,
+                'main_image_path'      => $publicUrl,
                 'is_recommended'  => 0,
             ]);
 

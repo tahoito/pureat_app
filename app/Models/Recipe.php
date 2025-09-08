@@ -14,7 +14,7 @@ class Recipe extends Model
         'description',
         'servings',
         'total_minutes',
-        'main_image',
+        'main_image_path',
         'is_favorite',
         'is_recommended',
     ];
@@ -26,22 +26,17 @@ class Recipe extends Model
     public function tags(){ return $this->belongsToMany(Tag::class, 'recipe_tag');}
 
 
-    protected $appends = ['main_image_path'];
-
-    public function getMainImagePathAttribute()
+    public function getMainImagePathAttribute($value)
     {
-        return filled($this->main_image)
-            ? Storage::disk('public')->url($this->main_image) 
-            : asset('images/placeholder.jpeg');
+        return $value ?: asset('images/placeholder.jpeg');
     }
 
     
     public function setMainImageAttribute($value)
     {
-        $this->attributes['main_image'] = str_starts_with($value, 'public/')
-            ? substr($value, 7) 
-            : $value;
-    }
-    
-
+        $this->attributes['main_image'] = 
+            str_starts_with((string)$value, 'public/')
+                ? substr($value, 7) 
+                : $value;
+    }    
 }
