@@ -10,7 +10,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $categories = Category::orderBy('')
+        $categories = Category::orderBy('id')
             ->take(9)
             ->get(['id','name','image_url']);
 
@@ -19,7 +19,8 @@ class HomeController extends Controller
 
         $tab = request('tab','all');
 
-        $query = Recipe::select('id','title','description','is_recommended') 
+        $query = Recipe::with(['tags:id,name'])
+            ->select('id','title','description','total_minutes') 
             ->latest('id');
            
         if ($tab === 'recommended'){
@@ -33,6 +34,11 @@ class HomeController extends Controller
                     'title'          => $r->title,
                     'description'    => $r->description,
                     'main_image'     => $r->main_image_path,
+                    'total_minutes' => $r->total_minutes,
+                    'tags' => $r->tags?->map(fn($t)=>[
+                                    'id'=>$t->id,
+                                    'name'=>$t->name
+                                    ])->values()->all() ?? [],
                     'is_recommended' => (bool) $r->is_recommended,
                 ];
             });
@@ -41,7 +47,7 @@ class HomeController extends Controller
             'categories' => $categories,
             'tags' => $tags,
             'recipes' => $recipes,
-            'tab' => request('tab','all'),
+            'tab' => $tab,
         ]);
 
     }

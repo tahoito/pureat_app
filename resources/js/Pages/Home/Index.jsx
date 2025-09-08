@@ -2,9 +2,13 @@ import React from "react";
 import { Head, Link, usePage } from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch,faClock } from "@fortawesome/free-solid-svg-icons";
 
 function RecipeCard({ r, highlight }) {
+  const img = r.main_image ?? r.main_image_path;
+  const hasMinutes = typeof r.total_minutes === "number" && !Number.isNaN(r.total_minutes)
+    ? r.total_minutes : null;
+  const firstTag = Array.isArray(r.tags) && r.tags.length > 0 ? r.tags[0] : null ;
   return (
     <article
       className={`rounded-lg overflow-hidden border bg-white ${
@@ -13,10 +17,21 @@ function RecipeCard({ r, highlight }) {
     >
       <Link href={typeof route === "function" ? route("recipes.show", r.id) : `/recipes/${r.id}`} className="block">
         {/* ← 両方おなじ高さに統一 */}
-        <img src={r.main_image_path} alt={r.title} className="w-full h-24 object-cover" />
-        <div className="p-2">
+        <img src={img} alt={r.title} className="w-full h-24 object-cover" />
+        <div className="p-2 space-y-1">
           <p className="text-sm font-medium line-clamp-1">{r.title}</p>
-          {r.description && <p className="text-xs text-gray-500 line-clamp-2">{r.description}</p>}
+          {hasMinutes && (
+            <div className="flex items-center gap-1 text-xs text-gray-500">
+              <FontAwesomeIcon icon={faClock} className="text-[11px]"/>
+              <span>{ r.total_minutes}分</span>
+            </div>
+          )}
+
+          {firstTag && (
+            <span className="inline-block px-2 py-0.5 rounded-full border border^main/20 bg-white text-gray-600 text-[11px]">
+              #{firstTag.name}
+            </span>
+          )}
         </div>
       </Link>
     </article>
