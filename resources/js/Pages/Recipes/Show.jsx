@@ -2,11 +2,13 @@ import React from "react";
 import { Head, Link, usePage } from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faClock, faHeart, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faClock, faHeart, faUser, faPen } from "@fortawesome/free-solid-svg-icons";
 
 export default function RecipeShow() {
     const { recipe, isFavorite = false } = usePage().props;
     const img = recipe.main_image || "/images/placeholder.png";
+    const hasZiggy = typeof route === 'function' && window?.Ziggy?.routes && window.Ziggy.routes['recipes.edit'];
+    const editHref = hasZiggy ? route('recipes.edit', recipe.id) : `/recipes/${recipe.id}/edit`;
 
     return (
         <AppShell title={recipe.title} active="">
@@ -22,6 +24,13 @@ export default function RecipeShow() {
                         <FontAwesomeIcon icon={faArrowLeft} className="text-xl text-base" />
                     </Link>
                     <div className="flex items-center gap-3">
+                        <Link 
+                            href={editHref}
+                            className="p-2"
+                            aria-label="編集"
+                        >
+                        <FontAwesomeIcon icon={faPen} className="text-lg text-base"/>
+                        </Link>
                         <button
                             type="button"
                             aria-label="お気に入り"
@@ -106,6 +115,19 @@ export default function RecipeShow() {
                             </ol>
                         </div>
                     </section>
+                )}
+
+                {recipe.description && recipe.description.trim() !== "" && (
+                <section className="px-4 py-4">
+                    <div className="w-full mx-auto max-w-[18rem]">
+                    <div className="flex items-center justify-center gap-2">
+                        <h2 className="text-xl font-semibold">メモ</h2>
+                    </div>
+                    <p className="mt-2 text-sm text-gray-700 text-center whitespace-pre-line leading-relaxed">
+                        {recipe.description}
+                    </p>
+                    </div>
+                </section>
                 )}
             </div>
         </AppShell>

@@ -89,7 +89,7 @@ export default function HomeIndex() {
             {categories.slice(0, 9).map((c) => (
               <Link
                 key={c.name}
-                href={`/recipes?category=${encodeURIComponent(c.name)}`} // ← テンプレでOK
+                href={`/recipes?category=${encodeURIComponent(c.name)}`} 
                 className="relative h-16 rounded-xl border border-main/30 overflow-hidden group"
               >
                 <img

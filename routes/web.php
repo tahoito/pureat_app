@@ -25,6 +25,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/add', [RecipeController::class,'create'])->name('recipes.add');
     Route::post('/recipes',[RecipeController::class,'store'])->name('recipes.store');
     Route::get('/recipes/{recipe}',[RecipeController::class,'show'])->name('recipes.show');
+    Route::get('/recipes/{recipe}/edit',[RecipeController::class,'edit'])->name('recipe.edit');
+    Route::put('/recipes/{recipe}',[RecipeController::class,'update'])->name('recipe.update');
 
     // ダッシュボード（必要なら）
     Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
