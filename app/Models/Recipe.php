@@ -25,9 +25,18 @@ class Recipe extends Model
     public function steps(){ return $this->hasMany(Step::class)->orderBy('position');}
     public function tags(){ return $this->belongsToMany(Tag::class, 'recipe_tag');}
 
+    protected $appends = ['main_image_path'];
 
     public function getMainImagePathAttribute($value)
     {
+        if (!empty($this->attributes['main_image'])){
+            return asset(Storage::disk('public')->url($this->attributes['main_image']));
+        }
+
+        if (!empty($this->attributes['main_image_path'])){
+            return asset(ltrim($this->attributes['main_image_path'],'/'));
+        }
+        
         return $value ?: asset('images/placeholder.jpeg');
     }
 
