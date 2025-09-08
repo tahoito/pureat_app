@@ -39,9 +39,9 @@ export default function RecipeShow() {
                 </div>
 
                 <div className="bg-white border border-main/10 px-5 py-7">
-                    <h1 className="text-3xl font-bold text-center">{recipe.title}</h1>
+                    <h1 className="text-3xl font-bold tracking-wide text-center">{recipe.title}</h1>
                     {Array.isArray(recipe.tags) && recipe.tags.length > 0 && (
-                        <div className="mt-3 flex flex-wrap justify-center gap-2">
+                        <div className="mt-3 flex flex-wrap justify-center gap-1.5">
                             {recipe.tags.map((t) => (
                             <span
                                 key={t.id}
@@ -57,25 +57,24 @@ export default function RecipeShow() {
                 {Array.isArray(recipe.ingredients) && recipe.ingredients.length > 0 && (
                     <section className="px-4 py-4">
                         <div className="w-full mx-auto max-w-[18rem]">
-                            <h2 className="flex items-center justify-center gap-2 text-xl font-semibold">
-                                材料
+                            <div className="flex items-center justify-center gap-2">
+                                <h2 className="text-xl font-semibold">材料</h2>
                                 {typeof recipe.servings === "number" && (
-                                    <span className="text-xs text-gray-500/80 flex items-center gap-1">
-                                        <FontAwesomeIcon icon={faUser} className="text-[12px]" />
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-base text-[11px] text-gray-700">
+                                        <FontAwesomeIcon icon={faUser} className="text-[11px]" aria-hidden="true" />
                                         {recipe.servings}人分
                                     </span>
                                 )}
-                            </h2>
-                            <ul className="mt-2 grid grid-cols-2 gap-y-1.5 text-sm leading-tight">
+                            </div>
+                            <ul className="mt-3 text-sm leading-tight">
                                 {recipe.ingredients.map((ing, i) => {
                                     const amt = (ing.amount ?? '').toString().trim();
                                     return (
-                                        <React.Fragment key={ing.id ?? i}>
-                                        <li className="text-text">{ing.name}</li>
-                                        <li className="text-text text-right font-mono">
-                                            {amt !== '' ? amt : '-'}</li>
-                                        </React.Fragment>
-
+                                        <li key={ing.id ?? i} className="flex justify-between items-center py-2 border-b border-dotted border-gray-300 last:border-0">
+                                            <span className="text-text">{ing?.name ?? ""}</span>
+                                            <span className="text-text font-mono tabular-num ml-3">
+                                            {amt !== '' ? amt : '-'}</span>
+                                        </li>
                                     );
                                 })}
                             </ul>
@@ -86,19 +85,19 @@ export default function RecipeShow() {
                 {Array.isArray(recipe.steps) && recipe.steps.length > 0 && (
                     <section className="px-4 py-4">
                         <div className="w-full mx-auto max-w-[18rem]">
-                            <h2 className="flex items-center justify-center gap-2 text-xl font-semibold">
-                                作り方
+                            <div className="flex items-center justify-center gap-2">
+                                <h2 className="text-xl font-semibold">作り方</h2>
                                 {typeof recipe.total_minutes === "number" && (
                                     <span className="text-xs text-gray-500/80 flex items-center gap-1">
                                         <FontAwesomeIcon icon={faClock} className="text-[11px]"/>
                                         {recipe.total_minutes}分
                                     </span>
                                 )}
-                            </h2>
-                            <ol className="mt-2 space-y-2">
+                            </div>
+                            <ol className="mt-3 space-y-2.5">
                                 {recipe.steps.map((st, i) => (
-                                    <li key={st.id ?? i} className="flex items-baseline gap-3">
-                                        <span className="flex-none inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-500 text-white text-xs leading-none">
+                                    <li key={st.id ?? i} className="flex items-start gap-3">
+                                        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-500 text-white leading-none">
                                             {i + 1}
                                         </span>
                                         <p className="text-sm text-gray-800 leading-relaxed">{st.body}</p>
