@@ -43,7 +43,6 @@ export default function AddPage() {
 
   const [preview, setPreview] = useState("");
 
-  // 画像プレビューは data.main_image だけを見る
   useEffect(() => {
     if (!data.main_image) { setPreview(""); return; }
     const url = URL.createObjectURL(data.main_image);
@@ -100,7 +99,9 @@ export default function AddPage() {
             type="submit"
             form="recipeForm"
             disabled={processing}
-            className="px-3 py-1.5 text-text rounded-lg bg-base text-lg font-bold active:opacity-90 disabled:opacity-60"
+            className="px-3 h-9 text-white rounded-lg bg-amber-500 text-sm font-semibold 
+                      hover:bg-amber-600 active:bg-amber-700
+                      disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
           >
             保存
           </button>
@@ -108,17 +109,19 @@ export default function AddPage() {
       </header>
 
       {/* ★ フォーム開始（ここから下を包む） */}
-      <form id="recipeForm" onSubmit={onSubmit} className="p-4 pb-28 space-y-5">
+      <form id="recipeForm" onSubmit={onSubmit} className="pt-12 p-4 pb-28 space-y-5">
 
         {/* いちばん上の写真エリア */}
-        <section className="pt-12 rounded-2xl overflow-hidden bg-gray-100">
+        <section className="rounded-2xl overflow-hidden">
           <label htmlFor="main-image" className="block cursor-pointer" title="画像を選択">
-            <div className="relative w-full aspect-[4/3] bg-gray-100">
+            <div className="relative w-full aspect-[4/3]">
               {preview ? (
-                <img src={preview} alt="プレビュー" className="absolute inset-0 w-full h-full object-cover" />
+                <img src={preview} alt="プレビュー" className="absolute inset-0 w-full h-full object-cover rounded-2xl shadow-sm" />
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-gray-500">
-                  ここをタップして写真を追加
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-1
+                  rounded-2xl border-2 border-dashed border-gray-300 bg-white text-gray-500">
+                  <p className="text-sm">ここをタップして写真を追加</p>
+                  <p className="text-[11px] text-gray-400">（横長でもOK・後から変更できます）</p>
                 </div>
               )}
               <span className="absolute top-2 right-2 text-xs bg-white/90 backdrop-blur px-2 py-1 rounded-lg border">
@@ -138,7 +141,7 @@ export default function AddPage() {
         </section>
 
         {/* 入力ブロック（白背景は内側に1つでOK） */}
-        <div className="p-4 pb-28 space-y-5 bg-white">
+        <div className="p-4 pb-8 space-y-5 bg-white">
         <section className="p-4 space-y-3">
           <div>
             <label htmlFor="title" className="block text-lg text-text text-center">料理名</label>
@@ -223,7 +226,7 @@ export default function AddPage() {
               <label htmlFor="servings" className="block text-sm text-gray-600">人数</label>
               <input
                 id="servings" name="servings"
-                type="number" min="1"
+                type="number" min="1" inputMode="numeric" pattern="\d*"
                 className="mt-1 w-full rounded-lg border p-2"
                 value={data.servings}
                 onChange={(e) => setData("servings", e.target.value)}
@@ -307,10 +310,26 @@ export default function AddPage() {
             onClick={addStep}>+ 手順を追加</button>
           </div>
         </section>
+
+        <section className="p-4 space-y-2">
+          <label htmlFor="description" className="block text-base text-text text-center">
+            メモ（任意）
+          </label>
+          <textarea
+            id="description"
+            rows={3}
+            className="w-full rounded-lg border p-2 text-sm"
+            placeholder="パスタは茹で過ぎない"
+            value={data.description}
+            onChange={(e) => setData("description", e.target.value)}
+          />
+          {errors.description && (
+            <p className="mt-1 text-xs text-red-600">{errors.description}</p>
+          )}
+        </section>
         </div>
 
       </form>
-      {/* ← フォームの中で開いた要素はフォームの中で閉じる。ネスト順を崩さない！ */}
     </AppShell>
   );
 }

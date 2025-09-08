@@ -19,14 +19,23 @@ class HomeController extends Controller
 
         $tab = request('tab','all');
 
-        $query = Recipe::select('id','title','description','main_image_path','is_recommended') 
+        $query = Recipe::select('id','title','description','is_recommended') 
             ->latest('id');
            
         if ($tab === 'recommended'){
             $query->where('is_recommended',1);
         }
 
-        $recipes = $query->paginate(10)->withQueryString();
+        $recipes = $query->paginate(10)->withQueryString()
+            ->through(function (Recipe $r) {
+                return [
+                    'id'             => $r->id,
+                    'title'          => $r->title,
+                    'description'    => $r->description,
+                    'main_image'     => $r->main_image_path,
+                    'is_recommended' => (bool) $r->is_recommended,
+                ];
+            });
 
         return Inertia::render('Home/Index',[
             'categories' => $categories,

@@ -56,7 +56,7 @@ class RecipeController extends Controller
                 'description'     => $validated['description'] ?? null,
                 'servings'        => $validated['servings'] ?? null,
                 'total_minutes'   => $validated['total_minutes'] ?? null,
-                'main_image_path' => $imageUrl,
+                'main_image' => $path,
                 'is_recommended'  => 0,
             ]);
 
@@ -97,7 +97,7 @@ class RecipeController extends Controller
                 ]);
             }
 
-            return $recipe;   // ★ 忘れず返す
+            return $recipe;   
         });
 
         return redirect()
