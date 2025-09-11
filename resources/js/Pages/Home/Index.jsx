@@ -1,5 +1,5 @@
-import React from "react";
-import { Head, Link, usePage } from "@inertiajs/react";
+import React,{ useState, useEffect } from "react";
+import { Head, Link, usePage, router } from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch,faClock } from "@fortawesome/free-solid-svg-icons";
@@ -17,7 +17,7 @@ function RecipeCard({ r, highlight }) {
     >
       <Link href={typeof route === "function" ? route("recipes.show", r.id) : `/recipes/${r.id}`} className="block">
         {/* ← 両方おなじ高さに統一 */}
-        <img src={r.main_image_path} alt={r.title} className="w-full h-24 object-cover" />
+        <img src={img} alt={r.title} className="w-full h-24 object-cover" />
         <div className="p-2">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium line-clamp-1">{r.title}</p>
@@ -30,7 +30,7 @@ function RecipeCard({ r, highlight }) {
           </div>
         
           {firstTag && (
-            <span className="inline-block px-2 py-0.5 rounded-full border border^main/20 bg-white text-gray-600 text-[11px]">
+            <span className="inline-block px-2 py-0.5 rounded-full border border-main/20 bg-white text-gray-600 text-[11px]">
               #{firstTag.name}
             </span>
           )}
@@ -41,7 +41,10 @@ function RecipeCard({ r, highlight }) {
 }
 
 export default function HomeIndex() {
-  const { categories = [], tags = [], recipes = { data: [] }, tab = "all", highlight } = usePage().props;
+  const { categories = [], tags = [], recipes = { data: [] }, tab = "all",filters ={},  highlight } = usePage().props;
+  const [q ,setQ] = useState(filters?.q ?? "");
+
+  const debouncedQ = useDebounce(q,300);
 
   const Tab = ({ to, active, children }) => (
     <Link
@@ -57,6 +60,26 @@ export default function HomeIndex() {
     </Link>
   );
 
+  useEffect(() => {
+    if ((filters?.q ?? "") === debouncedQ) return;
+    router.get(route("home.index"),{q: debouncedQ},{
+      preserveState: true,
+      preserveScroll: true,
+      replace: true,
+    });
+  },[debouncedQ])
+
+
+  function useDebounce(value, delay = 300) {
+    const [v, setV] = useState(value);
+    useEffect(() => {
+      const id = setTimeout(() => setV(value), delay);
+      return () => clearTimeout(id);
+    }, [value, delay]);
+    return v;
+  }
+
+
   return (
     <AppShell title="ホーム">
       <Head title="ホーム" />
@@ -67,9 +90,12 @@ export default function HomeIndex() {
           className="relative"
           onSubmit={(e) => {
             e.preventDefault();
+            router.get(route("home.index"),{q},{ preserveState: true, replace: true });
           }}
-        >
+      >
           <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
             className="w-full h-12 pl-12 pr-4 rounded-full border-main/40 outline-none bg-white"
             placeholder="材料や料理名で検索"
           />
@@ -89,7 +115,7 @@ export default function HomeIndex() {
             {categories.slice(0, 9).map((c) => (
               <Link
                 key={c.name}
-                href={`/recipes?category=${encodeURIComponent(c.name)}`} 
+                href={route("home.index", { category: c.name})} 
                 className="relative h-16 rounded-xl border border-main/30 overflow-hidden group"
               >
                 <img
@@ -116,7 +142,7 @@ export default function HomeIndex() {
             {tags.map((t) => (
               <Link
                 key={t.slug}
-                href={`/recipes?tag=${encodeURIComponent(t.name)}`}
+                href={route("home.index", { tag : t.name })}
                 className="shrink-0 px-3 h-9 rounded-full border border-main/30 bg-white text-sm flex items-center hover:bg-base"
               >
                 #{t.name}
@@ -131,12 +157,12 @@ export default function HomeIndex() {
             <h2 className="text-lg mb-2 text-text">レシピ</h2>
             <div className="flex gap-2 text-sm">
               <Tab
-                to={typeof route === "function" ? route("explore", { tab: "recommended" }) : "/?tab=recommended"}
+                to={typeof route === "function" ? route("home.index", { tab: "recommended" }) : "/?tab=recommended"}
                 active={tab === "recommended"}
               >
                 おすすめ
               </Tab>
-              <Tab to={typeof route === "function" ? route("explore", { tab: "all" }) : "/?tab=all"} active={tab === "all"}>
+              <Tab to={typeof route === "function" ? route("home.index", { tab: "all" }) : "/?tab=all"} active={tab === "all"}>
                 すべて
               </Tab>
             </div>

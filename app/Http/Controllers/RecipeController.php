@@ -11,6 +11,7 @@ use App\Models\{Recipe, Category, Tag, Ingredient, Step};
 
 class RecipeController extends Controller
 {
+
     public function create()
     {
         return Inertia::render('Add/Index', [

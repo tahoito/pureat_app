@@ -19,7 +19,7 @@ Route::get('/welcome', function () {
 // ここから認証後の画面
 Route::middleware(['auth', 'verified'])->group(function () {
     // 探す（ホーム）
-    Route::get('/', [HomeController::class, 'index'])->name('explore');
+    Route::get('/',[HomeController::class,'index'])->name('home.index');
 
     // 追加ページ（見た目だけならこれでOK）
     Route::get('/add', [RecipeController::class,'create'])->name('recipes.add');

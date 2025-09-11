@@ -49,4 +49,18 @@ class Recipe extends Model
                 ? substr($value, 7) 
                 : $value;
     }    
+
+    public function scopeSearch(Builder $q, ?string $term): Builder
+    {
+        $term = trim((string) $term);
+        if ($term === '') return $q;
+
+        return $q->where(function (Builder $qq) use ($term) {
+            $qq->where('title', 'LIKE', "%{$term}%")
+            ->orWhere('description', 'LIKE', "%{$term}%")
+            ->orWhere('body', 'LIKE', "%{$term}%")
+            ->orWhereHas('ingredients', fn ($i) => $i->where('name', 'LIKE', "%{$term}%"))
+            ->orWhereHas('tags', fn ($t) => $t->where('name', 'LIKE', "%{$term}%"));
+        });
+    }
 }
