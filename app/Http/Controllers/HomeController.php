@@ -20,6 +20,8 @@ class HomeController extends Controller
         $tab       = $request->query('tab', 'all');
         $perPage   = (int) $request->query('per_page', 12);
         $perPage   = max(1, min($perPage, 50)); // 安全な範囲に丸め
+        $hasFilter = $q !== '' || $tag || $category;
+        if($hasFilter) $tab = 'all';
 
         // --- サイドデータ ---
         $categories = Category::orderBy('id')

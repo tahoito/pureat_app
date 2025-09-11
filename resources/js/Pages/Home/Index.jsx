@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch,faClock } from "@fortawesome/free-solid-svg-icons";
 
 function RecipeCard({ r, highlight }) {
-  const img = r.main_image ?? r.main_image_path;
+  const img = r.main_image_url ?? r.main_image ?? r.main_image_path;
   const hasMinutes = typeof r.total_minutes === "number" && !Number.isNaN(r.total_minutes)
     ? r.total_minutes : null;
   const firstTag = Array.isArray(r.tags) && r.tags.length > 0 ? r.tags[0] : null ;
@@ -96,7 +96,7 @@ export default function HomeIndex() {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="w-full h-12 pl-12 pr-4 rounded-full border-main/40 outline-none bg-white"
+            className="w-full h-12 pl-4 pr-4 rounded-full border-main/40 outline-none bg-white"
             placeholder="材料や料理名で検索"
           />
           <button
@@ -115,7 +115,11 @@ export default function HomeIndex() {
             {categories.slice(0, 9).map((c) => (
               <Link
                 key={c.name}
-                href={route("home.index", { category: c.name})} 
+                href={route("home.index", { 
+                  ...filters,
+                  category_id: c.id,
+                  tab: "all",
+                })} 
                 className="relative h-16 rounded-xl border border-main/30 overflow-hidden group"
               >
                 <img
@@ -142,7 +146,11 @@ export default function HomeIndex() {
             {tags.map((t) => (
               <Link
                 key={t.slug}
-                href={route("home.index", { tag : t.name })}
+                href={route("home.index",{
+                  ...filters,
+                  tag : t.name ,
+                  tab:"all"
+                   })}
                 className="shrink-0 px-3 h-9 rounded-full border border-main/30 bg-white text-sm flex items-center hover:bg-base"
               >
                 #{t.name}

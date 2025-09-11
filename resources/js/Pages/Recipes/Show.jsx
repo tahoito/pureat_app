@@ -20,7 +20,7 @@ export default function RecipeShow() {
                 h-12
                 ">
                 <div className="h-full px-3 flex items-center justify-between">
-                    <Link href={typeof route === "function" ? route("explore") : "/"} className="p-2 -ml-2">
+                    <Link href={typeof route === "function" ? route("home.index") : "/"} className="p-2 -ml-2">
                         <FontAwesomeIcon icon={faArrowLeft} className="text-xl text-base" />
                     </Link>
                     <div className="flex items-center gap-3">

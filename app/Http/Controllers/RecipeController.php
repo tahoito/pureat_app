@@ -46,7 +46,7 @@ class RecipeController extends Controller
             ? $request->file('main_image')->store('recipes','public')
             :null;
 
-        $publicUrl = $path ? Storage::disk('public')->url($path):null;
+        //$publicUrl = $path ? Storage::disk('public')->url($path):null;
         
         $recipe = DB::transaction(function () use ($request, $validated, $publicUrl) {
             $recipe = Recipe::create([
@@ -56,7 +56,7 @@ class RecipeController extends Controller
                 'description'     => $validated['description'] ?? null,
                 'servings'        => $validated['servings'] ?? null,
                 'total_minutes'   => $validated['total_minutes'] ?? null,
-                'main_image_path'      => $publicUrl,
+                'main_image_path'      => $path,
                 'is_recommended'  => 0,
             ]);
 
@@ -102,7 +102,7 @@ class RecipeController extends Controller
         });
 
         return redirect()
-            ->route('explore', ['tab' => 'all', 'highlight' => $recipe->id])
+            ->route('home.index', ['tab' => 'all', 'highlight' => $recipe->id])
             ->with('flash', ['type' => 'success', 'message' => 'レシピを追加したよ']);
     }
 
@@ -124,6 +124,7 @@ class RecipeController extends Controller
                 'servings'      => $recipe->servings,
                 'total_minutes' => $recipe->total_minutes,
                 'main_image'    => $recipe->main_image_path,
+                'main_image_url'=> $recipe->main_image_path ? url(Storage::url($recipe->main_image_path)) : null,   
                 'category'      => $recipe->category,
                 'tags'          => $recipe->tags,
                 'ingredients'   => $recipe->ingredients->values(),
@@ -151,6 +152,7 @@ class RecipeController extends Controller
                 'servings'      => $recipe->servings,
                 'total_minutes' => $recipe->total_minutes,
                 'main_image'    => $recipe->main_image_path,
+                'main_image_url'=> $recipe->main_image_path ? url(Storage::url($recipe->main_image_path)) : null,   
                 'ingredients'   => $recipe->ingredients->values(),
                 'steps'         => $recipe->steps->values(),
                 'category'      => $recipe->category,  
@@ -186,7 +188,7 @@ class RecipeController extends Controller
 
         if($request->hasFile('main_image')){
             $path = $request->file('main_image')->store('recipes','public');
-            $recipe->main_image = $path;
+            $recipe->main_image_path = $path;
         }
 
         $recipe->fill([
