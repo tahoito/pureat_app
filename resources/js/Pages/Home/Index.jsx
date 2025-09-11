@@ -148,7 +148,7 @@ export default function HomeIndex() {
                 key={t.slug}
                 href={route("home.index",{
                   ...filters,
-                  tag : t.name ,
+                  tag : t.slug ,
                   tab:"all"
                    })}
                 className="shrink-0 px-3 h-9 rounded-full border border-main/30 bg-white text-sm flex items-center hover:bg-base"

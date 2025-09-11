@@ -2,10 +2,11 @@ import React from "react";
 import { Head, Link, usePage } from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faClock, faHeart, faUser, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faClock, faUser, faPen } from "@fortawesome/free-solid-svg-icons";
+import FavoriteButton from "@/Components/FavoriteButton";
 
 export default function RecipeShow() {
-    const { recipe, isFavorite = false } = usePage().props;
+    const { recipe, isFavorite } = usePage().props;
     const img = recipe.main_image || "/images/placeholder.png";
     const hasZiggy = typeof route === 'function' && window?.Ziggy?.routes && window.Ziggy.routes['recipes.edit'];
     const editHref = hasZiggy ? route('recipes.edit', recipe.id) : `/recipes/${recipe.id}/edit`;
@@ -31,13 +32,13 @@ export default function RecipeShow() {
                         >
                         <FontAwesomeIcon icon={faPen} className="text-lg text-base"/>
                         </Link>
-                        <button
-                            type="button"
-                            aria-label="お気に入り"
-                            className={`p-2 ${isFavorite ? "text-amber-500" : ""}`}
-                        >
-                            <FontAwesomeIcon icon={faHeart} className="text-lg text-base" />
-                        </button>
+                        <FavoriteButton
+                            recipeId={recipe.id}
+                            initial={isFavorite}
+                            iconOnly
+                            activeBg="text-accent"
+                            inactiveBg="text-white/90"
+                        />
                     </div>
                 </div>
             </header>

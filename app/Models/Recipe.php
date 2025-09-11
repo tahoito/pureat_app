@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 
 class Recipe extends Model
 {
@@ -63,4 +64,6 @@ class Recipe extends Model
             ->orWhereHas('tags', fn ($t) => $t->where('name', 'LIKE', "%{$term}%"));
         });
     }
+
+    public function favoriters(){ return $this->belongsToMany(User::class, 'favorites')->withTimestamps();  }
 }

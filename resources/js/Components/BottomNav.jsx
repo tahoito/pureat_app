@@ -8,7 +8,7 @@ const items = [
     { href:"/", label:"調べる",icon:faSearch, match:"/"},
     { href:"/view", label:"閲覧履歴",icon:faClock, match:"/view"},
     { href:"/add", label:"追加する",icon:faPlus, match:"/add"},
-    { href:"/favorite", label:"お気に入り",icon:faHeart, match:"/favorite"},
+    { href:"/favorites", label:"お気に入り",icon:faHeart, match:"/favorite"},
     { href:"/share", label:"共有",icon:faUserGroup, match:"/share"},
 ];
 

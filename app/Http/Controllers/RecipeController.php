@@ -106,8 +106,14 @@ class RecipeController extends Controller
             ->with('flash', ['type' => 'success', 'message' => 'レシピを追加したよ']);
     }
 
-    public function show(Recipe $recipe)
+    public function show(Request $request, Recipe $recipe)
     {
+        $user = $request->user();
+        $isFavorite = $request->user()
+            ? $user->favoriteRecipes()->whereKey($recipe->id)->exists()
+            : false;
+
+
         $recipe->load([
             'category:id,name',
             'tags:id,name,slug',
@@ -132,7 +138,7 @@ class RecipeController extends Controller
                 'author'        => $recipe->user,
                 'created_at'    => $recipe->created_at?->toDateTimeString(),
             ],
-            'isFavorite' => false,
+            'isFavorite' => $isFavorite,
         ]);
     }
 
