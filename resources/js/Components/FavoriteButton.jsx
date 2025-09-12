@@ -1,4 +1,3 @@
-// resources/js/Components/FavoriteButton.jsx
 import { useState } from "react";
 import { router } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,8 +9,8 @@ export default function FavoriteButton({
   initial = false,
   iconOnly = false,
   className = "",
-  activeBg = "text-accent",
-  inactiveBg = "text-white/90",
+  activeColor = "text-accent",     // ← ここを accent でOK
+  inactiveColor = "text-white/90",
 }) {
   const [fav, setFav] = useState(!!initial);
   const [loading, setLoading] = useState(false);
@@ -35,14 +34,12 @@ export default function FavoriteButton({
         onClick={toggle}
         disabled={loading}
         aria-label={fav ? "お気に入り解除" : "お気に入りに追加"}
-        className={[
-          "p-2 rounded-full transition disabled:opacity-60 disabled:pointer-events-none",
-          fav ? `${activeBg} text-white` : `${inactiveBg} text-white/90 hover:bg-white/10`,
-          "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent/60",
-          className
-        ].join(" ")}
+        className={`p-2 rounded-full transition disabled:opacity-60 ${className}`}
       >
-        <FontAwesomeIcon icon={icon} className="text-lg" />
+        <FontAwesomeIcon
+          icon={icon}
+          className={`text-lg ${fav ? activeColor : inactiveColor}`}
+        />
       </button>
     );
   }
@@ -53,15 +50,12 @@ export default function FavoriteButton({
       onClick={toggle}
       disabled={loading}
       aria-pressed={fav}
-      className={[
-        "inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm border transition",
-        fav
-          ? `${activeBg} text-white border-transparent`
-          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50",
-        className
-      ].join(" ")}
+      className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm border transition ${className} bg-white border-gray-300 hover:bg-gray-50`}
     >
-      <FontAwesomeIcon icon={icon} />
+      <FontAwesomeIcon
+        icon={icon}
+        className={fav ? activeColor : "text-gray-700"}
+      />
       <span className="text-gray-800">{fav ? "お気に入り" : "お気に入りに追加"}</span>
     </button>
   );

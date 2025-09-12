@@ -109,6 +109,22 @@ class RecipeController extends Controller
     public function show(Request $request, Recipe $recipe)
     {
         $user = $request->user();
+
+        if($user){
+            $cutoff = now()->subMinutes(30);
+            $exists = ViewHistory::where('user_id',$user->id)
+                ->where('recipe_id',$recipe->id)
+                ->where('created_at','>=',$recipe->id)
+                ->exists();
+            if(!$exists){
+                ViewHistory::create([
+                    'user_id' => $user->id,
+                    'recipe_id' => $recipe->id,
+                    'viewed_at' => now(),
+                ]);
+            }
+        }
+
         $isFavorite = $request->user()
             ? $user->favoriteRecipes()->whereKey($recipe->id)->exists()
             : false;

@@ -29,6 +29,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/recipes/{recipe}/edit',[RecipeController::class,'edit'])->name('recipe.edit');
     Route::put('/recipes/{recipe}',[RecipeController::class,'update'])->name('recipe.update');
 
+    Route::get('history',[HistoryController::class,'index'])->name('history.index');
+    Route::delete('history/clear',[HistoryController::class,'clear'])->name('history.clear');
+    Route::delete('history/{recipeId}',[HistoryController::class,'destory'])->
+
     Route::post('/recipes/{recipe}/favorite',[FavoriteController::class,'toggle'])->name('recipes.favorite.toggle');
     Route::get('/favorites',[FavoriteController::class,'index'])->name('favorites.index');
 
