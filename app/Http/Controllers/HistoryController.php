@@ -14,7 +14,7 @@ class HistoryController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        about_unless($user,403);
+        abort_unless($user,403);
         
         $histories = ViewHistory::with(['recipe.tags:id,name,slug','recipe.category:id,name'])
             ->where('user_id',$user->id)
@@ -37,12 +37,12 @@ class HistoryController extends Controller
             })
             ->withQueryString();
 
-        return Inertia::render('Histories/Index', [
-            'histories' => $histories,
+        return Inertia::render('History/Index', [
+            'recipes' => $histories,
         ]);
     }
 
-    public function destory(Request $request, int $recipeId)
+    public function destroy(Request $request, int $recipeId)
     {
         $user = $request->user();
         ViewHistory::where('user_id',$user->id)->where('recipe_id',$recipeId)->delete();

@@ -2,10 +2,11 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\HistoryController;   // ★ 追加
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/welcome', function () {
@@ -17,26 +18,28 @@ Route::get('/welcome', function () {
     ]);
 });
 
-// ここから認証後の画面
 Route::middleware(['auth', 'verified'])->group(function () {
-    // 探す（ホーム）
-    Route::get('/',[HomeController::class,'index'])->name('home.index');
+    // ホーム
+    Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
-    // 追加ページ（見た目だけならこれでOK）
-    Route::get('/add', [RecipeController::class,'create'])->name('recipes.add');
-    Route::post('/recipes',[RecipeController::class,'store'])->name('recipes.store');
-    Route::get('/recipes/{recipe}',[RecipeController::class,'show'])->name('recipes.show');
-    Route::get('/recipes/{recipe}/edit',[RecipeController::class,'edit'])->name('recipe.edit');
-    Route::put('/recipes/{recipe}',[RecipeController::class,'update'])->name('recipe.update');
+    // レシピ CRUD
+    Route::get('/add', [RecipeController::class, 'create'])->name('recipes.add');
+    Route::post('/recipes', [RecipeController::class, 'store'])->name('recipes.store');
+    Route::get('/recipes/{recipe}', [RecipeController::class, 'show'])->name('recipes.show');
+    Route::get('/recipes/{recipe}/edit', [RecipeController::class, 'edit'])->name('recipes.edit');     // ★ 統一
+    Route::put('/recipes/{recipe}', [RecipeController::class, 'update'])->name('recipes.update');      // ★ 統一
 
-    Route::get('history',[HistoryController::class,'index'])->name('history.index');
-    Route::delete('history/clear',[HistoryController::class,'clear'])->name('history.clear');
-    Route::delete('history/{recipeId}',[HistoryController::class,'destory'])->
+    // 閲覧履歴
+    Route::get('history', [HistoryController::class, 'index'])->name('history.index');
+    Route::delete('history/clear', [HistoryController::class, 'clear'])->name('history.clear');
+    Route::delete('history/{recipe}', [HistoryController::class, 'destroy'])->name('history.destroy'); // ★ name 追加
 
-    Route::post('/recipes/{recipe}/favorite',[FavoriteController::class,'toggle'])->name('recipes.favorite.toggle');
-    Route::get('/favorites',[FavoriteController::class,'index'])->name('favorites.index');
+    // お気に入り
+    Route::post('/recipes/{recipe}/favorite', [FavoriteController::class,'toggle'])
+        ->name('recipes.favorite.toggle');
+    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
 
-    // ダッシュボード（必要なら）
+    // ダッシュボード
     Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
 
     // プロフィール
