@@ -48,7 +48,7 @@ class RecipeController extends Controller
 
         //$publicUrl = $path ? Storage::disk('public')->url($path):null;
         
-        $recipe = DB::transaction(function () use ($request, $validated, $publicUrl) {
+        $recipe = DB::transaction(function () use ($request, $validated, $path) {
             $recipe = Recipe::create([
                 'user_id'         => $request->user()->id,
                 'category_id'     => $validated['category_id'],
@@ -56,7 +56,7 @@ class RecipeController extends Controller
                 'description'     => $validated['description'] ?? null,
                 'servings'        => $validated['servings'] ?? null,
                 'total_minutes'   => $validated['total_minutes'] ?? null,
-                'main_image_path'      => $path,
+                'main_image_path' => $path,
                 'is_recommended'  => 0,
             ]);
 
@@ -114,11 +114,11 @@ class RecipeController extends Controller
             $cutoff = now()->subMinutes(30);
             $exists = ViewHistory::where('user_id',$user->id)
                 ->where('recipe_id',$recipe->id)
-                ->where('created_at','>=',$recipe->id)
+                ->where('viewed_at','>=',$cutoff)
                 ->exists();
             if(!$exists){
                 ViewHistory::create([
-                    'user_id' => $user->id,
+                    'user_id'   => $user->id,
                     'recipe_id' => $recipe->id,
                     'viewed_at' => now(),
                 ]);
@@ -146,7 +146,7 @@ class RecipeController extends Controller
                 'servings'      => $recipe->servings,
                 'total_minutes' => $recipe->total_minutes,
                 'main_image'    => $recipe->main_image_path,
-                'main_image_url'=> $recipe->main_image_path ? url(Storage::url($recipe->main_image_path)) : null,   
+                'main_image_url'=> $recipe->main_image_url,   
                 'category'      => $recipe->category,
                 'tags'          => $recipe->tags,
                 'ingredients'   => $recipe->ingredients->values(),
@@ -174,7 +174,7 @@ class RecipeController extends Controller
                 'servings'      => $recipe->servings,
                 'total_minutes' => $recipe->total_minutes,
                 'main_image'    => $recipe->main_image_path,
-                'main_image_url'=> $recipe->main_image_path ? url(Storage::url($recipe->main_image_path)) : null,   
+                'main_image_url'=> $recipe->main_image_path_url,
                 'ingredients'   => $recipe->ingredients->values(),
                 'steps'         => $recipe->steps->values(),
                 'category'      => $recipe->category,  

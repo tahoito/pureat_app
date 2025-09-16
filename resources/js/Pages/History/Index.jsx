@@ -56,20 +56,20 @@ function RecipeCard({ r }) {
     const item = r.recipe ?? r;
     const img = resolveImg(item);
     const hasMinutes =
-        typeof r.total_minutes === "number" && !Number.isNaN(r.total_minutes)
+        typeof item.total_minutes === "number" && !Number.isNaN(item.total_minutes)
         ? r.total_minutes
         : null;
-    const firstTag = Array.isArray(r.tags) && r.tags.length > 0 ? r.tags[0] : null;
+    const firstTag = Array.isArray(item.tags) && item.tags.length > 0 ? item.tags[0] : null;
 
     return (
         <article className="rounded-lg overflow-hidden border bg-white">
-        <Link href={route("recipes.show", r.id)} className="block">
+        <Link href={route("recipes.show", item.id)} className="block">
             <div className="relative">
-                <img src={img} alt={r.title} className="w-full h-24 object-cover" />
+                <img src={img} alt={item.title} className="w-full h-24 object-cover" loading="lazy" onError={(e) => {e.currentTarget.src =  "/images/placeholder.jpeg";}} />
             </div>
             <div className="p-2">
             <div className="flex items-center justify-between">
-                <p className="text-sm font-medium line-clamp-1">{r.title}</p>
+                <p className="text-sm font-medium line-clamp-1">{item.title}</p>
                 {hasMinutes && (
                 <div className="flex items-center gap-1 text-xs text-gray-500">
                     <FontAwesomeIcon icon={faClock} className="text-[11px]" />

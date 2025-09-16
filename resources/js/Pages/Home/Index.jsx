@@ -117,7 +117,7 @@ export default function HomeIndex() {
                 key={c.name}
                 href={route("home.index", { 
                   ...filters,
-                  category_id: c.id,
+                  category: c.slug ?? c.id,
                   tab: "all",
                 })} 
                 className="relative h-16 rounded-xl border border-main/30 overflow-hidden group"
@@ -148,7 +148,7 @@ export default function HomeIndex() {
                 key={t.slug}
                 href={route("home.index",{
                   ...filters,
-                  tag : t.slug ,
+                  tag : t.slug ?? t.id,
                   tab:"all"
                    })}
                 className="shrink-0 px-3 h-9 rounded-full border border-main/30 bg-white text-sm flex items-center hover:bg-base"

@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder; 
 use Illuminate\Support\Facades\Storage;
-use App\Models\User;
+use Illuminate\Support\Str;
 
 class Recipe extends Model
 {
@@ -15,55 +16,55 @@ class Recipe extends Model
         'description',
         'servings',
         'total_minutes',
-        'main_image_path',
+        'main_image_path',   
         'is_favorite',
         'is_recommended',
         'amount',
     ];
-    
-    public function user(){ return $this->belongsTo(User::class);}
-    public function category(){ return $this->belongsTo(category::class);}
-    public function ingredients(){ return $this->hasMany(Ingredient::class)->orderBy('position');}
-    public function steps(){ return $this->hasMany(Step::class)->orderBy('position');}
-    public function tags(){ return $this->belongsToMany(Tag::class, 'recipe_tag');}
 
-    protected $appends = ['main_image_path'];
+   
+    protected $appends = ['main_image_url'];
 
-    public function getMainImagePathAttribute($value)
+
+    public function user()     { return $this->belongsTo(User::class); }
+    public function category() { return $this->belongsTo(Category::class); } // ← 大文字に
+    public function ingredients(){ return $this->hasMany(Ingredient::class)->orderBy('position'); }
+    public function steps()    { return $this->hasMany(Step::class)->orderBy('position'); }
+    public function tags()     { return $this->belongsToMany(Tag::class, 'recipe_tag'); }
+    public function favoriters(){ return $this->belongsToMany(User::class, 'favorites')->withTimestamps(); }
+
+   
+    public function getMainImageUrlAttribute(): ?string
     {
-        if (!empty($this->attributes['main_image'])){
-            return asset(Storage::disk('public')->url($this->attributes['main_image']));
+       
+        $candidates = [
+            $this->attributes['thumbnail_url']     ?? null,
+            $this->attributes['main_image']        ?? null,
+            $this->attributes['main_image_path']   ?? null, // 相対パスが入る想定
+        ];
+
+        foreach ($candidates as $v) {
+            if (!$v) continue;
+
+          
+            if (Str::startsWith($v, ['http://','https://','/'])) {
+                return $v;
+            }
+
+            
+            return Storage::url(ltrim($v, '/'));
         }
 
-        if (!empty($this->attributes['main_image_path'])){
-            return asset(ltrim($this->attributes['main_image_path'],'/'));
-        }
-
-        return $value ?: asset('images/placeholder.jpeg');
+        return asset('images/placeholder.jpeg');
     }
 
     
-    public function setMainImageAttribute($value)
+    public function setMainImageAttribute($value): void
     {
-        $this->attributes['main_image'] = 
+        $this->attributes['main_image'] =
             str_starts_with((string)$value, 'public/')
-                ? substr($value, 7) 
+                ? substr($value, 7) // public/ を外す → recipes/xxx
                 : $value;
-    }    
-
-    public function scopeSearch(Builder $q, ?string $term): Builder
-    {
-        $term = trim((string) $term);
-        if ($term === '') return $q;
-
-        return $q->where(function (Builder $qq) use ($term) {
-            $qq->where('title', 'LIKE', "%{$term}%")
-            ->orWhere('description', 'LIKE', "%{$term}%")
-            ->orWhere('body', 'LIKE', "%{$term}%")
-            ->orWhereHas('ingredients', fn ($i) => $i->where('name', 'LIKE', "%{$term}%"))
-            ->orWhereHas('tags', fn ($t) => $t->where('name', 'LIKE', "%{$term}%"));
-        });
     }
 
-    public function favoriters(){ return $this->belongsToMany(User::class, 'favorites')->withTimestamps();  }
 }
