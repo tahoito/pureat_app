@@ -4,9 +4,57 @@ import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faClock } from "@fortawesome/free-solid-svg-icons";
 
+function startOfDay(x){
+    const d = new Date(x);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+function diffDays(a,b){
+    return Math.round((startOfDay(a) - startOfDay(b)) / 86400000);
+}
+
+function toDateKey(dt) {
+    const d = new Date(dt);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2,"0");
+    const day = String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${day}`;
+}
+
+function dateLabel(dt){
+    const d = new Date(dt);
+    const today = new Date();
+    const dDays = diffDays(today,d);
+    
+    if(dDays === 0) return "今日";
+    if(dDays === 1) return "昨日";
+
+    const day = today.getDay();
+    const offsetToMonday = (day + 6) % 7;
+    const startThisWeek = startOfDay(new Date(today.getFullYear(), today.getMonth(), today.getDate()-offsetToMonday));
+    const startLastWeek = new Date(startThisWeek);
+    startLastWeek.setDate(startThisWeek.getDate() - 7);
+
+    if ( d >= startThisWeek ) return "今週";
+    if ( d >= startLastWeek && d < startThisWeek ) return "先週";  
+    
+    const w = ["日","月","火","水","木","金","土"];
+    return `${d.getMonth()+1}/${d.getDate()}(${w[d.getDay()]})`;
+}
+
+function resolveImg(item){
+    const raw = item?.main_image_url ??
+                item?.main_image ?? item?.main_image_path ?? null;   
+                
+    if(!raw) return "/images/placeholder.png";
+    if(/^https?:\/\//.test(raw) || raw.startsWith("/")) return raw;
+    return `/storage/${raw.replace(/^\/?storage\//,"")}`;
+}
+
+
 function RecipeCard({ r }) {
-    const img =
-        r.main_image_url ?? r.main_image ?? r.main_image_path ?? "/images/placeholder.png";
+    const item = r.recipe ?? r;
+    const img = resolveImg(item);
     const hasMinutes =
         typeof r.total_minutes === "number" && !Number.isNaN(r.total_minutes)
         ? r.total_minutes
@@ -16,7 +64,9 @@ function RecipeCard({ r }) {
     return (
         <article className="rounded-lg overflow-hidden border bg-white">
         <Link href={route("recipes.show", r.id)} className="block">
-            <img src={img} alt={r.title} className="w-full h-24 object-cover" />
+            <div className="relative">
+                <img src={img} alt={r.title} className="w-full h-24 object-cover" />
+            </div>
             <div className="p-2">
             <div className="flex items-center justify-between">
                 <p className="text-sm font-medium line-clamp-1">{r.title}</p>
@@ -32,9 +82,6 @@ function RecipeCard({ r }) {
                 #{firstTag.name}
                 </span>
             )}
-            {r.viewed_at && (
-                <p className="mt-1 text-[11px] text-gray-400">閲覧: {r.viewed_at}</p>
-            )}
             </div>
         </Link>
         </article>
@@ -43,6 +90,17 @@ function RecipeCard({ r }) {
 
     export default function HistoryIndex() {
     const { recipes = { data: [], links: [] } } = usePage().props;
+    const groups = React.useMemo(() => {
+        const byDate = {};
+        for (const r of recipes.data){
+            const when = r.viewed_at ?? r.updated_at ?? r.created_at ?? new Date().toISOString();
+            const key = toDateKey(when);;
+            (byDate[key] ||= []).push(r);
+        }
+
+        const sortedKeys = Object.keys(byDate).sort((a,b) => (a<b ? 1:-1));
+        return sortedKeys.map((key) => ({ key, label: dateLabel(key),items: byDate[key]}));
+    },[recipes.data]);
 
     return (
         <AppShell title="閲覧履歴" active="history">
@@ -86,9 +144,21 @@ function RecipeCard({ r }) {
             </p>
             ) : (
             <>
-                <div className="grid grid-cols-2 gap-3">
-                {recipes.data.map((r) => (
-                    <RecipeCard key={r.id} r={r} />
+                <div className="space-y-6">
+                {groups.map((section) => (
+                    <section key={section.key} className="space-y-4">
+                        <div className="flex items-center">
+                            <h2 className="text-xs font-semibold text-text tracking-wide mr-3 pl-2">
+                            {section.label}
+                            </h2>
+                            <hr className="flex-1 border-t border-main/40"/>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                            {section.items.map((r) => (
+                                <RecipeCard key={r.id} r={r} />
+                            ))}
+                        </div>
+                    </section>
                 ))}
                 </div>
             </>
