@@ -114,9 +114,9 @@ export default function HomeIndex() {
           <div className="grid grid-cols-3 gap-3">
             {categories.slice(0, 9).map((c) => (
               <Link
-                key={c.name}
+                key={c.id}
                 href={route("home.index", { 
-                  ...filters,
+                  q:filters.q ?? undefined,
                   category: c.slug ?? c.id,
                   tab: "all",
                 })} 
@@ -145,9 +145,9 @@ export default function HomeIndex() {
           <div className="flex gap-2 overflow-x-auto no-scrollbar">
             {tags.map((t) => (
               <Link
-                key={t.slug}
+                key={t.slug ?? t.id}
                 href={route("home.index",{
-                  ...filters,
+                  q:filters.q ?? undefined,
                   tag : t.slug ?? t.id,
                   tab:"all"
                    })}

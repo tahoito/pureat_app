@@ -37,7 +37,7 @@ class HomeController extends Controller
             ->with(['tags:id,name,slug','category:id,name,slug',])
             ->when($tab === 'recommended', fn ($q) => $q->where('is_recommended', 1))
             ->when($q !== '', function (Builder $x) use ($q) {
-                $qr->where(function (Builder $x) use ($q) {
+                $query->where(function (Builder $x) use ($q) {
                     $x->where('title', 'LIKE', "%{$q}%")
                       ->orWhere('description', 'LIKE', "%{$q}%")
                       ->orWhereHas('ingredients', fn ($i) => $i->where('name', 'LIKE', "%{$q}%"))
@@ -45,8 +45,8 @@ class HomeController extends Controller
                 });
             })
 
-            ->when($tag, function ($qr) use ($tag) {
-                $qr->whereHas('tags', function ($t) use ($tag) {
+            ->when($tag, function ($query) use ($tag) {
+                $query->whereHas('tags', function ($t) use ($tag) {
                     if (is_numeric($tag)) {
                         $t->where('id', (int) $tag);
                     } else {
@@ -54,8 +54,8 @@ class HomeController extends Controller
                     }
                 });
             })
-            ->when($category, function ($qr) use ($category) {
-                $qr->where('category', function($c) use ($category){
+            ->when($category, function ($query) use ($category) {
+                $query->where('category', function($c) use ($category){
                     if (is_numeric($category)){
                         $c->where('id',(int) $category);
                     }else{
