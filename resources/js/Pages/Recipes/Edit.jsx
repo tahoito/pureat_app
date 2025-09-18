@@ -86,6 +86,17 @@ export default function EditRecipe() {
       preserveScroll: true,
     });
   };
+  
+  const changeIngredient = (idx, field, value) => {
+    setData("ingredients", data.ingredients.map((ing, i) =>
+      i === idx ? { ...ing, [field]: value } : ing
+    ));
+  };
+
+  const changeStep = (idx, value) => {
+    setData("steps", data.steps.map((s, i) => (i === idx ? value : s)));
+  };
+
 
   return (
     <AppShell title="追加する" active="">

@@ -90,7 +90,7 @@ export default function AddPage() {
         h-12
         ">
         <div className="h-12 px-3 flex items-center justify-between">
-          <Link href={typeof route === "function" ? route("home.index") : "/"} className="p-2 -ml-2" aria-label="閉じる">
+          <Link href={typeof route === "function" ? route("") : "/"} className="p-2 -ml-2" aria-label="閉じる">
             <FontAwesomeIcon icon={faXmark} className="text-xl text-base" />
           </Link>
 
