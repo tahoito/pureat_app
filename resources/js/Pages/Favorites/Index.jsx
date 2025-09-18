@@ -6,34 +6,43 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faClock } from "@fortawesome/free-solid-svg-icons";
 
 // --- Homeと同じ見た目のカード ---
+function resolveImg(raw){
+    if(!raw) return "/images/placeholder.jpeg"
+    if (typeof raw !== "string") return "/images/placeholder.jpeg";
+    if (/^https?:\/\//.test(raw) || raw.startsWith("/")) return raw;
+    return `/storage/${raw.replace(/^\/?storage\//, "")}`;
+}
+
 function RecipeCard({ r, highlight }) {
-  const img =
-    r.main_image_url ?? r.main_image ?? r.main_image_path ?? "/images/placeholder.png";
+  const item = r?.recipe ?? r;
+  const img = resolveImg(
+    item?.main_image_url ?? item?.main_image ?? item?.main_image_path
+  );
   const hasMinutes =
-    typeof r.total_minutes === "number" && !Number.isNaN(r.total_minutes)
-      ? r.total_minutes
+    typeof item?.total_minutes === "number" && !Number.isNaN(item.total_minutes)
+      ? item.total_minutes
       : null;
-  const firstTag = Array.isArray(r.tags) && r.tags.length > 0 ? r.tags[0] : null;
+  const firstTag = Array.isArray(item?.tags) && item.tags.length > 0 ? item.tags[0] : null;
 
   return (
     <article
       className={`rounded-lg overflow-hidden border bg-white ${
-        Number(highlight) === r.id ? "ring-2 ring-amber-400" : ""
+        Number(highlight) === (item?.id ?? r?.id) ? "ring-2 ring-amber-400" : ""
       }`}
     >
       <Link
-        href={typeof route === "function" ? route("recipes.show", r.id) : `/recipes/${r.id}`}
+        href={route("recipes.show", item.id)}
         className="block"
       >
         {/* 同じ高さに統一 */}
-        <img src={img} alt={r.title} className="w-full h-24 object-cover" />
+        <img src={img} alt={item?.title ?? ""} className="w-full h-24 object-cover" />
         <div className="p-2">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium line-clamp-1">{r.title}</p>
+            <p className="text-sm font-medium line-clamp-1">{item?.title}</p>
             {hasMinutes && (
               <div className="flex items-center gap-1 text-xs text-gray-500">
                 <FontAwesomeIcon icon={faClock} className="text-[11px]" />
-                <span>{r.total_minutes}分</span>
+                <span>{hasMinutes}分</span>
               </div>
             )}
           </div>

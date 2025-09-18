@@ -32,29 +32,12 @@ class FavoriteController extends Controller
 
     public function index(Request $request)
     {
-        $recipes = $request->user()->favoriteRecipes()
+        $recipes = $request->user()
+            ->favoriteRecipes()
             ->with(['tags:id,name,slug', 'category:id,name'])
-            ->select(['recipes.id','title','description','total_minutes','main_image_path','category_id'])          
+            ->select(['recipes.id','recipes.title','recipes.description','recipes.total_minutes','recipes.main_image_path','recipes.category_id'])          
             ->orderByDesc('favorites.created_at')
             ->paginate(12)
-            ->through(function (Recipe $r) {    
-                return [
-                    'id'             => $r->id,
-                    'title'          => $r->title,
-                    'description'    => $r->description,
-                    'total_minutes'  => $r->total_minutes,
-                    'category'       => $r->category ? ['id'=>$r->category->id,'name'=>$r->category->name] : null,
-                    'tags'           => $r->tags->map(fn($t)=>['id'=>$t->id,'name'=>$t->name,'slug'=>$t->slug])->all(),
-                    'main_image_url' => (function ($path) {
-                        if (!$path) return null;
-                        if (\Illuminate\Support\Str::startsWith($path, ['http://','https://'])) {
-                            $base = rtrim(config('app.url'), '/');
-                            return preg_replace('#^https?://[^/]+#', $base, $path);
-                        }
-                        return url(\Illuminate\Support\Facades\Storage::disk('public')->url($path));
-                    })($r->main_image_path),
-                ];
-            })   
             ->withQueryString();
 
         return Inertia::render('Favorites/Index', [

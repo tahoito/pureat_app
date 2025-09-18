@@ -7,7 +7,7 @@ import FavoriteButton from "@/Components/FavoriteButton";
 
 export default function RecipeShow() {
     const { recipe, isFavorite } = usePage().props;
-    const img = recipe.main_image || "/images/placeholder.png";
+    const img = recipe.main_image || "/images/placeholder.jpeg";
     const hasZiggy = typeof route === 'function' && window?.Ziggy?.routes && window.Ziggy.routes['recipes.edit'];
     const editHref = hasZiggy ? route('recipes.edit', recipe.id) : `/recipes/${recipe.id}/edit`;
 

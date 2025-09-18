@@ -39,20 +39,36 @@ class Recipe extends Model
        
         $candidates = [
             $this->attributes['thumbnail_url']     ?? null,
+            $this->attributes['main_image_url']        ?? null,
             $this->attributes['main_image']        ?? null,
             $this->attributes['main_image_path']   ?? null, // 相対パスが入る想定
         ];
 
         foreach ($candidates as $v) {
             if (!$v) continue;
+            $v = (string) $v;
 
-          
-            if (Str::startsWith($v, ['http://','https://','/'])) {
+
+            if (Str::startsWith($v, ['http://','https://'])) {
                 return $v;
             }
 
+          
+            if (Str::startsWith($v, '/')) {
+                $v = preg_replace('#^/storage/(https?://)#','$1',$v);
+                $v = preg_replace('#^/storage/storage#','/storage/',$v);
+                $v = preg_replace('#^/storage/images/#', '/images/', $v);
+                return $v;
+            }
+
+            if (Str::startsWith($v, 'images/')){
+                return asset($v);
+            }
             
-            return Storage::url(ltrim($v, '/'));
+            $v = ltrim($v, '/');
+            $v = preg_replace('#^storage/#','',$v);
+            $path = Storage::url($v);
+            return url($path);
         }
 
         return asset('images/placeholder.jpeg');
