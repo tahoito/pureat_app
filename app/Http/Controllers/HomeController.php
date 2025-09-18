@@ -27,7 +27,7 @@ class HomeController extends Controller
        
         $categories = Category::orderBy('id')
             ->take(9)
-            ->get(['id', 'name', 'image_url']);
+            ->get(['id','name','slug','image_url']);
 
         $tags = Tag::orderBy('name')
             ->get(['id', 'name', 'slug']);
@@ -36,8 +36,8 @@ class HomeController extends Controller
             ->select(['id','title','description','total_minutes','is_recommended','main_image_path'])
             ->with(['tags:id,name,slug','category:id,name,slug',])
             ->when($tab === 'recommended', fn ($q) => $q->where('is_recommended', 1))
-            ->when($q !== '', function (Builder $x) use ($q) {
-                $query->where(function (Builder $x) use ($q) {
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where(function ($x) use ($q) {
                     $x->where('title', 'LIKE', "%{$q}%")
                       ->orWhere('description', 'LIKE', "%{$q}%")
                       ->orWhereHas('ingredients', fn ($i) => $i->where('name', 'LIKE', "%{$q}%"))
@@ -55,9 +55,9 @@ class HomeController extends Controller
                 });
             })
             ->when($category, function ($query) use ($category) {
-                $query->where('category', function($c) use ($category){
+                $query->whereHas('category', function($c) use ($category){
                     if (is_numeric($category)){
-                        $c->where('id',(int) $category);
+                        $c->where('id',(int)$category);
                     }else{
                         $c->where('slug', $category)->orWhere('name',$category);
                     }
