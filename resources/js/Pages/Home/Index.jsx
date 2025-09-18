@@ -177,7 +177,7 @@ export default function HomeIndex() {
                 onClick={() => clearFilter("tag")}
                 className="px-3 h-8 rounded-full bg-amber-50 border border-amber-300 text-amber-700 text-sm"
               >
-                タグ: {resolveCategoryLabel(filters.tag,tags)} ×
+                タグ: {resolveTagLabel(filters.tag,tags)} ×
               </button>
             )}
           </div>

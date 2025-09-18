@@ -45,6 +45,7 @@ class HistoryController extends Controller
                     'total_minutes'=> $r->total_minutes,
                     'category'   => $r->category ?['id'=>$r->category->id,'name'=>$r->category->name]: null,
                     'tags'       => $r->tags->map(fn($t)=>['id'=>$t->id,'name'=>$t->name,'slug'=>$t->slug])->all(),
+                    'main_image_url' => $r->main_image_url,
                     'viewed_at'  => optional($vh->viewed_at)->toDateTimeString(),
                 ];
             })
