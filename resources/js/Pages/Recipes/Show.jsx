@@ -1,9 +1,24 @@
 import React from "react";
-import { Head, Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage, router } from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faClock, faUser, faPen } from "@fortawesome/free-solid-svg-icons";
 import FavoriteButton from "@/Components/FavoriteButton";
+
+
+function BackButton(){
+    const search = typeof window !== "undefined" ? window.location.search : "";
+    const param = new URLSearchParams(search);
+    const from = params.get("from");
+
+    const fallback = 
+        from === "favorites"
+            ? route("favorites.index")
+            : from === "history"
+            ? route("history.index")
+            : route("home.index");
+}
+
 
 export default function RecipeShow() {
     const { recipe, isFavorite } = usePage().props;
@@ -21,9 +36,19 @@ export default function RecipeShow() {
                 h-12
                 ">
                 <div className="h-full px-3 flex items-center justify-between">
-                    <Link href={typeof route === "function" ? route("home.index") : "/"} className="p-2 -ml-2">
+                    <button 
+                        type="button"
+                        onClick={() => {
+                            if (typeof window !== "undefined" && window.history.length > 1){
+                                window.history.back();
+                            }else {
+                                router.visit(fallback, { preserveScroll : true, replace : true})
+                            }
+                        }}
+                        className="p-2 -ml-2"
+                        aria-label="戻る">
                         <FontAwesomeIcon icon={faArrowLeft} className="text-xl text-base" />
-                    </Link>
+                    </button>
                     <div className="flex items-center gap-3">
                         <Link 
                             href={editHref}

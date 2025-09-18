@@ -1,6 +1,6 @@
 // resources/js/Pages/Favorites/Index.jsx
 import React from "react";
-import { Head, Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage, router} from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faClock } from "@fortawesome/free-solid-svg-icons";
@@ -71,13 +71,20 @@ export default function FavoritesIndex() {
         role="banner"
       >
         <div className="h-full px-3 flex items-center justify-between">
-          <Link
-            href={typeof route === "function" ? route("home.index") : "/"}
+          <button
+            type="button"
+            onClick={() => {
+                if(window.history.length > 1 ){
+                    window.history.back();
+                }else {
+                    router.visit(route("favorites.index"),{ preserveScroll : true });
+                }
+            }}
             className="p-2 -ml-2"
             aria-label="戻る"
           >
             <FontAwesomeIcon icon={faArrowLeft} className="text-xl text-base" />
-          </Link>
+          </button>
           <h1 className="text-lg font-medium">お気に入り</h1>
           <span className="w-8" />{/* 右の余白バランス用 */}
         </div>

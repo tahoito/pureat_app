@@ -148,9 +148,20 @@ export default function HistoryIndex() {
         role="banner"
       >
         <div className="h-full px-3 flex items-center justify-between">
-          <Link href={route("home.index")} className="p-2 -ml-2" aria-label="戻る">
+          <button
+            type="button"
+            onClick={() => {
+                if(window.history.length > 1 ){
+                    window.history.back();
+                }else {
+                    router.visit(route("history.index"),{ preserveScroll:true});
+                }
+            }}
+            className="p-2 -ml-2" 
+            aria-label="戻る"
+        >
             <FontAwesomeIcon icon={faArrowLeft} className="text-xl text-base" />
-          </Link>
+          </button>
           <h1 className="text-lg font-medium">閲覧履歴</h1>
 
           <button
