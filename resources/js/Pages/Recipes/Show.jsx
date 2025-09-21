@@ -129,14 +129,11 @@ export default function RecipeShow() {
                                     </span>
                                 )}
                             </div>
-                            <ol className="mt-3 space-y-2.5">
+                            <ol className="mt-3 space-y-2.5 list-decimal pl-6 marker:font-semibold marker:text-amber-500">
                                 {recipe.steps.map((st, i) => (
-                                    <li key={st.id ?? i} className="flex items-start gap-3">
-                                        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-500 text-white leading-none">
-                                            {i + 1}
-                                        </span>
-                                        <p className="text-sm text-gray-800 leading-relaxed">{st.body}</p>
-                                    </li>
+                                    <li key={st.id ?? i} className="text-sm text-gray-800 leading-relaxed">
+                                        {st.body}
+                                    </li>   
                                 ))}
                             </ol>
                         </div>
