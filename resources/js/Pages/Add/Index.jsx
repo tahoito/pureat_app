@@ -34,7 +34,7 @@ export default function AddPage() {
     if(found){
         toggleTag(found.id);
     }else{
-        if(!data.tag_names.some(n=> n.toLowerCase()===name.toLowerCase)){
+        if(!data.tag_names.some(n => n.toLowerCase()===name.toLowerCase)){
             setData("tag_names",[...data.tag_names,name]);
         }
     }
@@ -79,6 +79,13 @@ export default function AddPage() {
     post(storeUrl, { forceFormData: true });
   };
 
+  const closeHref =
+    typeof route === "function" && window?.Ziggy?.routes?.["home.index"]
+      ? route("home.index")
+      : "/";
+
+
+
   return (
     <AppShell title="追加する" active="add">
       <Head title="レシピを追加" />
@@ -90,7 +97,7 @@ export default function AddPage() {
         h-12
         ">
         <div className="h-12 px-3 flex items-center justify-between">
-          <Link href={typeof route === "function" ? route("") : "/"} className="p-2 -ml-2" aria-label="閉じる">
+          <Link href={closeHref} className="p-2 -ml-2" aria-label="閉じる">
             <FontAwesomeIcon icon={faXmark} className="text-xl text-base" />
           </Link>
 
@@ -288,12 +295,9 @@ export default function AddPage() {
             <label className="block w-full text-lg text-text text-center">作り方</label>
           </div>
 
-          <ol className="space-y-2">
+          <ol className="list-decimal pl-6 space-y-2 marker:font-semibold marker:text-amber-500">
             {data.steps.map((s, idx) => (
             <li key={idx} className="flex items-start gap-2">
-                <span className="mt-2 w-6 h-6 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center">
-                {idx + 1}
-                </span>
                 <textarea
                 rows={2}
                 className="flex-1 rounded-lg border p-2"

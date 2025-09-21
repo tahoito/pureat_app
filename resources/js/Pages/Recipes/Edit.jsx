@@ -7,10 +7,14 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 export default function EditRecipe() {
   const page = usePage();
   const { recipe, categories = [], tags = [] } = page.props || {};
+  const params = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
+  const from = params.get("from");
 
   if (!recipe) return <div className="p-4">Loading...</div>;
 
   const { data, setData, post, processing, errors } = useForm({
+    from: from ?? null,
+    _method: "put",
     title: recipe.title ?? "",
     description: recipe.description ?? "",
     servings: recipe.servings ?? "",
@@ -30,7 +34,6 @@ export default function EditRecipe() {
         ? recipe.steps.map((s) => s.body ?? "")
         : ["", ""],
     main_image: null,
-    _method: "put", 
   });
 
   const [tagInput, setTagInput] = useState("");
@@ -97,6 +100,7 @@ export default function EditRecipe() {
     setData("steps", data.steps.map((s, i) => (i === idx ? value : s)));
   };
 
+  const closeHref = route("recipes.show", recipe.id) + (from ? `?from=${from}` : "");
 
   return (
     <AppShell title="追加する" active="">

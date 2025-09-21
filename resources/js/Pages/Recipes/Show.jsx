@@ -6,9 +6,11 @@ import { faArrowLeft, faClock, faUser, faPen } from "@fortawesome/free-solid-svg
 import FavoriteButton from "@/Components/FavoriteButton";
 
 
-function BackButton(){
+export default function RecipeShow() {
+    const { recipe, isFavorite } = usePage().props;
+
     const search = typeof window !== "undefined" ? window.location.search : "";
-    const param = new URLSearchParams(search);
+    const params = new URLSearchParams(search);
     const from = params.get("from");
 
     const fallback = 
@@ -17,14 +19,30 @@ function BackButton(){
             : from === "history"
             ? route("history.index")
             : route("home.index");
-}
 
 
-export default function RecipeShow() {
-    const { recipe, isFavorite } = usePage().props;
+    const goBack = React.useCallback (() => {
+        if(from) {
+            router.visit(fallback,{ replace:true, preserveScroll:true});
+        }else if (typeof window !== "undefined" && window.history.length > 1){
+            window.history.back();
+        }else{
+            router.visit(route("home.index"),{replace:true});
+        }
+    },[from, fallback]);
+
     const img = recipe.main_image || "/images/placeholder.jpeg";
-    const hasZiggy = typeof route === 'function' && window?.Ziggy?.routes && window.Ziggy.routes['recipes.edit'];
-    const editHref = hasZiggy ? route('recipes.edit', recipe.id) : `/recipes/${recipe.id}/edit`;
+    const hasZiggy =
+        typeof route === 'function' &&
+        window?.Ziggy?.routes &&
+        window.Ziggy.routes['recipes.edit'];
+
+    const baseEdit = hasZiggy
+        ? route("recipes.edit", recipe.id)
+        : `/recipes/${recipe.id}/edit`;
+
+    const editHref = from ? `${baseEdit}?from=${from}` : baseEdit;
+
 
     return (
         <AppShell title={recipe.title} active="">
@@ -38,13 +56,7 @@ export default function RecipeShow() {
                 <div className="h-full px-3 flex items-center justify-between">
                     <button 
                         type="button"
-                        onClick={() => {
-                            if (typeof window !== "undefined" && window.history.length > 1){
-                                window.history.back();
-                            }else {
-                                router.visit(fallback, { preserveScroll : true, replace : true})
-                            }
-                        }}
+                        onClick={goBack}
                         className="p-2 -ml-2"
                         aria-label="戻る">
                         <FontAwesomeIcon icon={faArrowLeft} className="text-xl text-base" />

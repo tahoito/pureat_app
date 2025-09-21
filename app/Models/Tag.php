@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {
-    public function recipes() {return $this->belongsToMany(Recipe::class)->withTimestamps(); }
+    protected $fillable = ['name','slug'];
+    public function recipes() 
+    {
+        return $this->belongsToMany(Recipe::class)->withTimestamps(); 
+    }
 }
