@@ -31,7 +31,10 @@ export default function RecipeShow() {
         }
     },[from, fallback]);
 
-    const img = recipe.main_image || "/images/placeholder.jpeg";
+    const img =
+        recipe.main_image_url
+        ?? (recipe.main_image ? `/storage/${recipe.main_image}` : null)
+        ?? "/images/placeholder.jpeg";
     const hasZiggy =
         typeof route === 'function' &&
         window?.Ziggy?.routes &&
