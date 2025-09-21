@@ -6,7 +6,11 @@ import { faSearch, faClock } from "@fortawesome/free-solid-svg-icons";
 
 /* ---------------- RecipeCard ---------------- */
 function RecipeCard({ r, highlight }) {
-  const img = r.main_image_url ?? r.main_image ?? r.main_image_path;
+  const img = r.main_image_url 
+  ?? (r.main_image_path ? `/storage/${r.main_image_path}` : null)
+  ?? r.main_image
+  ?? "/images/placeholder.jpeg";
+  
   const hasMinutes =
     typeof r.total_minutes === "number" && !Number.isNaN(r.total_minutes)
       ? r.total_minutes
@@ -229,7 +233,7 @@ export default function HomeIndex() {
         {/* タグ */}
         <section>
           <h2 className="text-lg mb-2 text-text">タグ</h2>
-          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+          <div className="flex flex-wrap gap-1">
             {tags.map((t) => {
               const key = t.slug ?? t.id;
               const active = activeTag === key;
@@ -243,19 +247,19 @@ export default function HomeIndex() {
                     tab: "all",
                   })}
                   preserveScroll
-                  className={`shrink-0 px-3 h-9 rounded-full border text-sm flex items-center
+                  className={`px-2.5 h-8 rounded-full border text-sm flex items-center
                     ${
                       active
                         ? "bg-amber-50 border-amber-300 text-amber-700"
                         : "bg-white border-main/30 hover:bg-base"
                     }`}
-                  aria-pressed={active}
                 >
                   #{t.name}
                 </Link>
               );
             })}
           </div>
+
         </section>
 
         {/* レシピ（おすすめ | すべて） */}

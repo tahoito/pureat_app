@@ -34,7 +34,7 @@ export default function AddPage() {
     if(found){
         toggleTag(found.id);
     }else{
-        if(!data.tag_names.some(n => n.toLowerCase()===name.toLowerCase)){
+        if(!data.tag_names.some(n => n.toLowerCase() ===name.toLowerCase)){
             setData("tag_names",[...data.tag_names,name]);
         }
     }
@@ -295,25 +295,34 @@ export default function AddPage() {
             <label className="block w-full text-lg text-text text-center">作り方</label>
           </div>
 
-          <ol className="list-decimal pl-6 space-y-2 marker:font-semibold marker:text-amber-500">
+          <ol className="space-y-2">
             {data.steps.map((s, idx) => (
-            <li key={idx} className="flex items-start gap-2">
+              <li
+                key={idx}
+                className="grid grid-cols-[24px_1fr] items-start gap-2"
+              >
+                <span className="mt-2 inline-flex items-center justify-center
+                                w-6 h-6 rounded-full bg-amber-500 text-white text-xs">
+                  {idx + 1}
+                </span>
                 <textarea
-                rows={2}
-                className="flex-1 rounded-lg border p-2"
-                placeholder="例：パスタを茹でる"
-                value={s}
-                onChange={(e) => changeStep(idx, e.target.value)}
+                  rows={2}
+                  className="flex-1 rounded-lg border p-2"
+                  placeholder="例：パスタを茹でる"
+                  value={s}
+                  onChange={(e) => changeStep(idx, e.target.value)}
                 />
-            </li>
+              </li>
             ))}
           </ol>
 
           <div className="flex justify-center">
-            <button type="button" className="text-amber-600 text-sm"
-            onClick={addStep}>+ 手順を追加</button>
+            <button type="button" className="text-amber-600 text-sm" onClick={addStep}>
+              + 手順を追加
+            </button>
           </div>
         </section>
+
 
         <section className="p-4 space-y-2">
           <label htmlFor="description" className="block text-base text-text text-center">
