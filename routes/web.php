@@ -39,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('recipes.favorite.toggle');
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
 
+
     // ダッシュボード
     Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
 

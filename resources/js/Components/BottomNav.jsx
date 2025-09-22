@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, usePage } from "@inertiajs/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faPlus, faHeart, faSearch, faUserGroup } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faPlus, faHeart, faSearch, faListSquares } from "@fortawesome/free-solid-svg-icons";
 
 
 const items = [
@@ -9,7 +9,7 @@ const items = [
     { href:"/history", label:"閲覧履歴",icon:faClock, match:"/history"},
     { href:"/add", label:"追加する",icon:faPlus, match:"/add"},
     { href:"/favorites", label:"お気に入り",icon:faHeart, match:"/favorites"},
-    { href:"/share", label:"共有",icon:faUserGroup, match:"/share"},
+    { href:"/shopping_lists", label:"買い物リスト",icon:faListSquares, match:"/shopping_lists"},
 ];
 
 export default function BottomNav(){

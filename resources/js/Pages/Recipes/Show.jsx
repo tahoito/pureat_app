@@ -2,13 +2,12 @@ import React from "react";
 import { Head, Link, usePage, router } from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faClock, faUser, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faShareNodes, faArrowLeft, faClock, faUser, faPen } from "@fortawesome/free-solid-svg-icons";
 import FavoriteButton from "@/Components/FavoriteButton";
 
 
 export default function RecipeShow() {
     const { recipe, isFavorite } = usePage().props;
-
     const search = typeof window !== "undefined" ? window.location.search : "";
     const params = new URLSearchParams(search);
     const from = params.get("from");

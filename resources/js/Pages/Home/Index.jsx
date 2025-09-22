@@ -81,6 +81,7 @@ export default function HomeIndex() {
     tab = "all",
     filters = {},
     highlight,
+    recommended = [],
   } = usePage().props;
 
   const [q, setQ] = useState(filters?.q ?? "");

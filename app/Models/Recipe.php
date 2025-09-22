@@ -21,8 +21,6 @@ class Recipe extends Model
         'is_recommended',
         'amount',
     ];
-
-   
     protected $appends = ['main_image_url'];
 
 
@@ -32,7 +30,7 @@ class Recipe extends Model
     public function steps()    { return $this->hasMany(Step::class)->orderBy('position'); }
     public function tags()     { return $this->belongsToMany(Tag::class, 'recipe_tag'); }
     public function favoriters(){ return $this->belongsToMany(User::class, 'favorites')->withTimestamps(); }
-
+    
    
     public function getMainImageUrlAttribute(): ?string
     {
@@ -81,6 +79,10 @@ class Recipe extends Model
             str_starts_with((string)$value, 'public/')
                 ? substr($value, 7) // public/ を外す → recipes/xxx
                 : $value;
+    }
+
+    public function viewHistories(){
+        return $this->hasMany(ViewHistory::class);
     }
 
 }
