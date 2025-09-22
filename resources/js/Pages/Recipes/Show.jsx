@@ -65,8 +65,8 @@ export default function RecipeShow() {
         try {
         await axios.post(route("shopping-list.add"), { recipe_id: recipeId });
 
-        // 24時間有効（必要なら時間を変えてOK）
-        const EXPIRE_MS = 24 * 60 * 60 * 1000;
+        //12時間
+        const EXPIRE_MS = 12 * 60 * 60 * 1000;
         localStorage.setItem(KEY, String(Date.now() + EXPIRE_MS));
 
         setAdded(true);
