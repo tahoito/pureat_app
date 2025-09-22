@@ -21,20 +21,36 @@ class ShoppingListController extends Controller
     {
         $recipe = Recipe::findOrFail($request->recipe_id);
         foreach($recipe->ingredients as $ingredient){
-            ShoppingListItem::create([
-                'user_id' => auth()->id(),
-                'recipe_id' => $recipe->id,
-                'name' => $ingredient->name,
-                'checked' => false,
-            ]);
+            $item = ShoppingListItem::where('user_id', auth()->id())
+                ->where('name',$ingredient->name)
+                ->first();
+
+            if($item){
+                $item->quantity += 1;
+                $item->save();
+           }else{
+                ShoppingListItem::create([
+                    'user_id' => auth()->id(),
+                    'recipe_id' => $recipe->id,
+                    'name' => $ingredient->name,
+                    'checked' => false,
+                    'quantity' => 1,
+                ]);
+           }
         }
-        return back();
+        return response()->noContent();
     }
 
     public function toggle($id){
         $item = ShoppingListItem::findOrFail($id);
         $item->checked = !$item->checked;
         $item->save();
+        return back();
+    }
+
+    public function clear()
+    {
+        ShoppingListItem::where('user_id',auth()->id())->delete();
         return back();
     }
 }

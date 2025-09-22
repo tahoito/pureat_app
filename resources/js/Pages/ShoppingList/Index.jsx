@@ -35,7 +35,12 @@ export default function ShoppingList({ items = [] }) {
          
           <h1 className="justify-self-center text-lg font-medium">買い物リスト</h1>
 
-          <div className="justify-self-end w-8" />
+            <button 
+                type="button"
+                onClick={() => router.delete(route("shopping-list.clear"))}
+                className="text-sm underline decoration-white/60"
+            >リセット
+            </button>
         </div>
       </header>
 
@@ -59,7 +64,7 @@ export default function ShoppingList({ items = [] }) {
                 }
               />
               <span className={item.checked ? "line-through text-gray-400" : ""}>
-                {item.name}
+                {item.name}{item.quantity > 1 && `×${item.quantity}`}
               </span>
             </li>
           ))}

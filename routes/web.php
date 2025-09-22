@@ -43,6 +43,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/shopping-list/add',[ShoppingListController::class, 'add'])->name('shopping-list.add');
     Route::put('/shopping-list/{id}/toggle',[ShoppingListController::class,'toggle'])->name('shopping-list.toggle');
     Route::get('/shopping-list',[ShoppingListController::class,'index'])->name('shopping-list.index');
+    Route::delete('/shopping-list/clear',[ShoppingListController::class,'clear'])->name('shopping-list.clear');
 
     // ダッシュボード
     Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');

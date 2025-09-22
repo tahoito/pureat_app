@@ -2,7 +2,7 @@ import React from "react";
 import { Head, Link, usePage, router } from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartPlus, faListCheck, faArrowLeft, faClock, faUser, faPen, faC } from "@fortawesome/free-solid-svg-icons";
+import { faCartPlus, faListCheck, faArrowLeft, faClock, faUser, faPen, } from "@fortawesome/free-solid-svg-icons";
 import FavoriteButton from "@/Components/FavoriteButton";
 
 
@@ -71,18 +71,15 @@ export default function RecipeShow() {
         type="button"
         onClick={handleAdd}
         disabled={adding || added}
-        className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-full 
-            text-sm shadow-sm transition
+        className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full 
+            text-xs font-medium whitespace-nowrap shadow-sm transition
             ${added
-            ? "bg-emerald-100 text-emerald-700"
-            : "bg-amber-500 text-white hover:bg-amber-600 active:scale-[0.99]"} 
+            ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
+            : "bg-amber-500 text-white hover:bg-amber-600 active:scale-[0.98]"} 
             disabled:opacity-60 disabled:cursor-not-allowed`}
         >
-        <span className="inline-flex w-4 justify-center">
-            {/* アイコン：追加前=カート, 追加後=チェック入りリスト */}
-            <FontAwesomeIcon icon={added ? faListCheck : faCartPlus } className="text-[14px]" />
-        </span>
-        {added ? "追加済み" : adding ? "追加中..." : "買い物リストに追加"}
+            <FontAwesomeIcon icon={added ? faListCheck : faCartPlus } className="text-[13px]" />
+        {added ? "追加済み" : adding ? "追加中..." : "リストに追加"}
         </button>
     );
 }
@@ -149,18 +146,22 @@ export default function RecipeShow() {
                 {Array.isArray(recipe.ingredients) && recipe.ingredients.length > 0 && (
                     <section className="px-4 py-4">
                         <div className="w-full mx-auto max-w-[18rem]">
-                            <div className="flex items-center justify-center gap-2">
-                                <h2 className="text-xl font-semibold">材料</h2>
-                                {typeof recipe.servings === "number" && (
-                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-base text-[11px] text-gray-700">
-                                        <FontAwesomeIcon icon={faUser} className="text-[11px]" aria-hidden="true" />
-                                        {recipe.servings}人分
-                                    </span>
-                                )}
+                            <div className="grid items-center gap-2 grid-cols-1 sm:grid-cols-[1fr_auto_1fr]">
+                                <div className="justify-self-center flex items-center gap-2">
+                                    <h2 className="text-xl font-semibold">材料</h2>
+                                    {typeof recipe.servings === "number" && (
+                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-base text-[11px] text-gray-700">
+                                            <FontAwesomeIcon icon={faUser} className="text-[11px]" aria-hidden="true" />
+                                            {recipe.servings}人分
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="justify-self-center sm:justify-self-end">
+                                    <AddToShoppingButton recipeId={recipe.id} />
+                                </div>
                             </div>
 
-                            <AddToShoppingButton recipeId={recipe.id} />
-
+                            
                             <ul className="mt-3 text-sm leading-tight">
                                 {recipe.ingredients.map((ing, i) => {
                                     const amt = (ing.amount ?? '').toString().trim();
