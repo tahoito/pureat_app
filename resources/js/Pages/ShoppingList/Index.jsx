@@ -4,6 +4,7 @@ import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
+
 export default function ShoppingList({ items = [] }) {
   return (
     <AppShell title="買い物リスト">
@@ -15,7 +16,7 @@ export default function ShoppingList({ items = [] }) {
         role="banner"
       >
         {/* gridで左/中/右を確保 → 中央が常に真ん中 */}
-        <div className="h-full px-3 grid grid-cols-3 items-center">
+        <div className="h-full px-3 flex items-center justify-between">
           {/* 左：戻る */}
           <button
             type="button"
@@ -33,7 +34,7 @@ export default function ShoppingList({ items = [] }) {
           </button>
 
          
-          <h1 className="justify-self-center text-lg font-medium">買い物リスト</h1>
+          <h1 className="text-lg font-medium">買い物リスト</h1>
 
             <button 
                 type="button"

@@ -20,7 +20,7 @@ export default {
                 base:  "#FFF7EB",
                 text:  "#3E3E3E",
                 accent:"#E57373",
-                main2: "#8FB996",
+                main2: "#5bb268ff",
             }
         },
     },

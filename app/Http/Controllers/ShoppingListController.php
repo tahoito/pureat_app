@@ -26,7 +26,8 @@ class ShoppingListController extends Controller
                 ->first();
 
             if($item){
-                $item->quantity += 1;
+                $item->quantity = ($item->quantity ?? 1) + 1;
+                $item->checked = false;
                 $item->save();
            }else{
                 ShoppingListItem::create([
@@ -38,7 +39,7 @@ class ShoppingListController extends Controller
                 ]);
            }
         }
-        return response()->noContent();
+        return response()->json(['ok' => true]);
     }
 
     public function toggle($id){

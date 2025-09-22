@@ -4,7 +4,7 @@ import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faListCheck, faArrowLeft, faClock, faUser, faPen, } from "@fortawesome/free-solid-svg-icons";
 import FavoriteButton from "@/Components/FavoriteButton";
-
+import axios from "axios";
 
 export default function RecipeShow() {
     const { recipe, isFavorite } = usePage().props;
@@ -46,24 +46,37 @@ export default function RecipeShow() {
     const editHref = from ? `${baseEdit}?from=${from}` : baseEdit;
 
     function AddToShoppingButton({ recipeId }) {
+    const KEY = `shopping:addedUntil:${recipeId}`;
     const [adding, setAdding] = React.useState(false);
-    const [added, setAdded] = React.useState(false);
+    const [added,  setAdded]  = React.useState(false);
 
-    const handleAdd = () => {
+    // 起動時：24時間以内なら「追加済み」に
+    React.useEffect(() => {
+        try {
+        const until = Number(localStorage.getItem(KEY) || 0);
+        if (until && Date.now() < until) setAdded(true);
+        } catch {}
+    }, [KEY]);
+
+    // ← 今は await 使ってるのに async が付いてない！
+    const handleAdd = async () => {
         if (adding || added) return;
         setAdding(true);
-        router.post(
-        route("shopping-list.add"),
-        { recipe_id: recipeId },
-        {
-            preserveScroll: true,
-            onSuccess: () => {
-            setAdded(true);
-            setAdding(false);
-            },
-            onError: () => setAdding(false),
+        try {
+        await axios.post(route("shopping-list.add"), { recipe_id: recipeId });
+
+        // 24時間有効（必要なら時間を変えてOK）
+        const EXPIRE_MS = 24 * 60 * 60 * 1000;
+        localStorage.setItem(KEY, String(Date.now() + EXPIRE_MS));
+
+        setAdded(true);
+        } catch (e) {
+        // 失敗時は一旦addedを戻す
+        console.error(e);
+        setAdded(false);
+        } finally {
+        setAdding(false);
         }
-        );
     };
 
     return (
@@ -74,15 +87,18 @@ export default function RecipeShow() {
         className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full 
             text-xs font-medium whitespace-nowrap shadow-sm transition
             ${added
-            ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
+            ? "bg-main2 text-white border border-main2"
             : "bg-amber-500 text-white hover:bg-amber-600 active:scale-[0.98]"} 
             disabled:opacity-60 disabled:cursor-not-allowed`}
         >
-            <FontAwesomeIcon icon={added ? faListCheck : faCartPlus } className="text-[13px]" />
+        <FontAwesomeIcon
+            icon={added ? faListCheck : faCartPlus}
+            className="text-[13px]"
+        />
         {added ? "追加済み" : adding ? "追加中..." : "リストに追加"}
         </button>
     );
-}
+    }
 
 
 
