@@ -6,11 +6,12 @@ import { faSearch, faClock } from "@fortawesome/free-solid-svg-icons";
 
 /* ---------------- RecipeCard ---------------- */
 function RecipeCard({ r, highlight }) {
-  const img = r.main_image_url 
-  ?? (r.main_image_path ? `/storage/${r.main_image_path}` : null)
-  ?? r.main_image
-  ?? "/images/placeholder.jpeg";
-  
+  const img =
+    r.main_image_url ??
+    (r.main_image_path ? `/storage/${r.main_image_path}` : null) ??
+    r.main_image ??
+    "/images/placeholder.jpeg";
+
   const hasMinutes =
     typeof r.total_minutes === "number" && !Number.isNaN(r.total_minutes)
       ? r.total_minutes
@@ -25,7 +26,11 @@ function RecipeCard({ r, highlight }) {
       }`}
     >
       <Link href={route("recipes.show", r.id)} className="block">
-        <img src={img} alt={r.title} className="w-full aspect-[4/3] object-cover" />
+        <img
+          src={img}
+          alt={r.title}
+          className="w-full aspect-[4/3] object-cover"
+        />
         <div className="p-2">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium line-clamp-1">{r.title}</p>
@@ -57,20 +62,22 @@ function useDebounce(value, delay = 300) {
   return v;
 }
 
-
 function resolveCategoryLabel(val, categories) {
   if (!val) return null;
   const s = String(val);
-  const hit = categories.find(c => String(c.id) === s || c.slug === s);
-  return hit?.name ?? s; 
+  const hit = categories.find(
+    (c) => String(c.id) === s || c.slug === s
+  );
+  return hit?.name ?? s;
 }
 function resolveTagLabel(val, tags) {
   if (!val) return null;
   const s = String(val);
-  const hit = tags.find(t => String(t.id) === s || t.slug === s);
+  const hit = tags.find(
+    (t) => String(t.id) === s || t.slug === s
+  );
   return hit?.name ?? s;
 }
-
 
 /* ---------------- Page ---------------- */
 export default function HomeIndex() {
@@ -92,8 +99,7 @@ export default function HomeIndex() {
 
   const hasFilter = !!(filters?.q || filters?.tag || filters?.category);
   const useRecommended = !hasFilter && tab === "recommended";
-  const list = useRecommended ? recommended : (recipes.data ?? []);
-
+  const list = useRecommended ? recommended : recipes.data ?? [];
 
   const Tab = ({ to, active, children }) => (
     <Link
@@ -101,7 +107,11 @@ export default function HomeIndex() {
       preserveScroll
       className={`inline-flex items-center justify-center
         h-6 px-2.5 rounded-full border text-xs
-        ${active ? "bg-amber-500 text-white border-amber-500" : "bg-white text-gray-600"}`}
+        ${
+          active
+            ? "bg-amber-500 text-white border-amber-500"
+            : "bg-white text-gray-600"
+        }`}
       aria-selected={active}
       role="tab"
     >
@@ -134,7 +144,6 @@ export default function HomeIndex() {
     <AppShell title="ホーム">
       <Head title="ホーム" />
 
-      <div className="sticky top-0 z-30 bg-base/95 backdrop-blur supports-[backdrop-filter]:bg-base/70 border-b border-main/10">
       <div className="p-6 space-y-6">
         {/* 検索 */}
         <form
@@ -179,7 +188,8 @@ export default function HomeIndex() {
                 onClick={() => clearFilter("category")}
                 className="px-3 h-8 rounded-full bg-amber-50 border border-amber-300 text-amber-700 text-sm"
               >
-                カテゴリー: {resolveCategoryLabel(filters.category,categories)} ×
+                カテゴリー:{" "}
+                {resolveCategoryLabel(filters.category, categories)} ×
               </button>
             )}
             {filters.tag && (
@@ -187,7 +197,7 @@ export default function HomeIndex() {
                 onClick={() => clearFilter("tag")}
                 className="px-3 h-8 rounded-full bg-amber-50 border border-amber-300 text-amber-700 text-sm"
               >
-                タグ: {resolveTagLabel(filters.tag,tags)} ×
+                タグ: {resolveTagLabel(filters.tag, tags)} ×
               </button>
             )}
           </div>
@@ -265,47 +275,47 @@ export default function HomeIndex() {
               );
             })}
           </div>
-
         </section>
 
         {/* レシピ（おすすめ | すべて） */}
-        <section>
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg mb-2 text-text">レシピ</h2>
-            <div className="flex gap-2 text-sm">
-              <Tab
-                to={route("home.index", { ...filters, tab: "recommended" })}
-                active={tab === "recommended"}
-              >
-                おすすめ
-              </Tab>
-              <Tab
-                to={route("home.index", { ...filters, tab: "all" })}
-                active={tab === "all"}
-              >
-                すべて
-              </Tab>
-            </div>
+        <div className="flex items-center justify-between pt-1">
+          <h2 className="text-lg mb-2 text-text">レシピ</h2>
+          <div className="flex gap-2 text-sm">
+            <Tab
+              to={route("home.index", { ...filters, tab: "recommended" })}
+              active={tab === "recommended"}
+            >
+              おすすめ
+            </Tab>
+            <Tab
+              to={route("home.index", { ...filters, tab: "all" })}
+              active={tab === "all"}
+            >
+              すべて
+            </Tab>
           </div>
+        </div>
 
-          {!list.length ?(
+        <div className="pt-4">
+          {!list.length ? (
             <p className="text-sm text-gray-500">該当レシピがないよ</p>
-          ) : useRecommended? (
-            // フィルタ無しの時は横スクロール
+          ) : useRecommended ? (
             <div className="grid grid-cols-2 gap-3">
               {list.map((r) => (
-                  <RecipeCard r={r} highlight={highlight} />
+                <RecipeCard key={`rec-${r.id}`} r={r} highlight={highlight} />
               ))}
             </div>
           ) : (
-            // フィルタ有り or すべて はグリッド
             <>
               <div className="grid grid-cols-2 gap-3">
                 {list.map((r) => (
-                  <RecipeCard key={`recipe-${r.id}`} r={r} highlight={highlight} />
+                  <RecipeCard
+                    key={`recipe-${r.id}`}
+                    r={r}
+                    highlight={highlight}
+                  />
                 ))}
               </div>
-
               {!useRecommended && recipes.next_page_url && (
                 <div className="mt-2">
                   <Link
@@ -320,8 +330,7 @@ export default function HomeIndex() {
               )}
             </>
           )}
-        </section>
-      </div>
+        </div>
       </div>
     </AppShell>
   );

@@ -6,6 +6,7 @@ use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HistoryController;   // ★ 追加
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\ShoppingListController;  
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -39,6 +40,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('recipes.favorite.toggle');
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
 
+    Route::post('/shopping-list/add',[ShoppingListController::class, 'add'])->name('shopping-list.add');
+    Route::put('/shopping-list/{id}/toggle',[ShoppingListController::class,'toggle'])->name('shopping-list.toggle');
+    Route::get('/shopping-list',[ShoppingListController::class,'index'])->name('shopping-list.index');
 
     // ダッシュボード
     Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');

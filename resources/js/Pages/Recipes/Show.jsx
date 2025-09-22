@@ -2,7 +2,7 @@ import React from "react";
 import { Head, Link, usePage, router } from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShareNodes, faArrowLeft, faClock, faUser, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faCartPlus, faListCheck, faArrowLeft, faClock, faUser, faPen, faC } from "@fortawesome/free-solid-svg-icons";
 import FavoriteButton from "@/Components/FavoriteButton";
 
 
@@ -44,6 +44,49 @@ export default function RecipeShow() {
         : `/recipes/${recipe.id}/edit`;
 
     const editHref = from ? `${baseEdit}?from=${from}` : baseEdit;
+
+    function AddToShoppingButton({ recipeId }) {
+    const [adding, setAdding] = React.useState(false);
+    const [added, setAdded] = React.useState(false);
+
+    const handleAdd = () => {
+        if (adding || added) return;
+        setAdding(true);
+        router.post(
+        route("shopping-list.add"),
+        { recipe_id: recipeId },
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+            setAdded(true);
+            setAdding(false);
+            },
+            onError: () => setAdding(false),
+        }
+        );
+    };
+
+    return (
+        <button
+        type="button"
+        onClick={handleAdd}
+        disabled={adding || added}
+        className={`inline-flex items-center gap-1.5 h-8 px-3 rounded-full 
+            text-sm shadow-sm transition
+            ${added
+            ? "bg-emerald-100 text-emerald-700"
+            : "bg-amber-500 text-white hover:bg-amber-600 active:scale-[0.99]"} 
+            disabled:opacity-60 disabled:cursor-not-allowed`}
+        >
+        <span className="inline-flex w-4 justify-center">
+            {/* アイコン：追加前=カート, 追加後=チェック入りリスト */}
+            <FontAwesomeIcon icon={added ? faListCheck : faCartPlus } className="text-[14px]" />
+        </span>
+        {added ? "追加済み" : adding ? "追加中..." : "買い物リストに追加"}
+        </button>
+    );
+}
+
 
 
     return (
@@ -115,6 +158,9 @@ export default function RecipeShow() {
                                     </span>
                                 )}
                             </div>
+
+                            <AddToShoppingButton recipeId={recipe.id} />
+
                             <ul className="mt-3 text-sm leading-tight">
                                 {recipe.ingredients.map((ing, i) => {
                                     const amt = (ing.amount ?? '').toString().trim();
