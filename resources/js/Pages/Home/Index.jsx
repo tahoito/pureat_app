@@ -25,7 +25,7 @@ function RecipeCard({ r, highlight }) {
       }`}
     >
       <Link href={route("recipes.show", r.id)} className="block">
-        <img src={img} alt={r.title} className="w-full h-24 object-cover" />
+        <img src={img} alt={r.title} className="w-full aspect-[4/3] object-cover" />
         <div className="p-2">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium line-clamp-1">{r.title}</p>
@@ -80,16 +80,20 @@ export default function HomeIndex() {
     recipes = { data: [] },
     tab = "all",
     filters = {},
-    highlight,
     recommended = [],
+    highlight,
   } = usePage().props;
 
   const [q, setQ] = useState(filters?.q ?? "");
   const debouncedQ = useDebounce(q, 300);
 
-  const hasFilter = !!(filters?.q || filters?.tag || filters?.category);
   const activeCategory = filters?.category ?? null;
   const activeTag = filters?.tag ?? null;
+
+  const hasFilter = !!(filters?.q || filters?.tag || filters?.category);
+  const useRecommended = !hasFilter && tab === "recommended";
+  const list = useRecommended ? recommended : (recipes.data ?? []);
+
 
   const Tab = ({ to, active, children }) => (
     <Link
@@ -130,6 +134,7 @@ export default function HomeIndex() {
     <AppShell title="ホーム">
       <Head title="ホーム" />
 
+      <div className="sticky top-0 z-30 bg-base/95 backdrop-blur supports-[backdrop-filter]:bg-base/70 border-b border-main/10">
       <div className="p-6 space-y-6">
         {/* 検索 */}
         <form
@@ -283,31 +288,25 @@ export default function HomeIndex() {
             </div>
           </div>
 
-          {!recipes?.data?.length ? (
+          {!list.length ?(
             <p className="text-sm text-gray-500">該当レシピがないよ</p>
-          ) : !hasFilter && tab === "recommended" ? (
+          ) : useRecommended? (
             // フィルタ無しの時は横スクロール
-            <div className="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-6 px-6 py-1">
-              {recipes.data.map((r) => (
-                <div
-                  key={r.id}
-                  className="shrink-0 snap-start"
-                  style={{ width: "calc(50% - 0.375rem)" }}
-                >
+            <div className="grid grid-cols-2 gap-3">
+              {list.map((r) => (
                   <RecipeCard r={r} highlight={highlight} />
-                </div>
               ))}
             </div>
           ) : (
             // フィルタ有り or すべて はグリッド
             <>
               <div className="grid grid-cols-2 gap-3">
-                {recipes.data.map((r) => (
-                  <RecipeCard key={r.id} r={r} highlight={highlight} />
+                {list.map((r) => (
+                  <RecipeCard key={`recipe-${r.id}`} r={r} highlight={highlight} />
                 ))}
               </div>
 
-              {recipes.next_page_url && (
+              {!useRecommended && recipes.next_page_url && (
                 <div className="mt-2">
                   <Link
                     href={recipes.next_page_url}
@@ -322,6 +321,7 @@ export default function HomeIndex() {
             </>
           )}
         </section>
+      </div>
       </div>
     </AppShell>
   );
