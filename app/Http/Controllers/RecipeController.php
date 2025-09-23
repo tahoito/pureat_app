@@ -6,7 +6,8 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;           
-use Illuminate\Support\Str;            
+use Illuminate\Support\Str;   
+use Illuminate\Support\Arr;           
 use App\Models\{Recipe, Category, Tag, Ingredient, Step, ViewHistory};
 
 class RecipeController extends Controller
@@ -68,8 +69,8 @@ class RecipeController extends Controller
                 ->map(fn($n) => trim($n))
                 ->filter()
                 ->map(function ($name) {
-                    $slug = Str::slug($name, '-');
-                    $tag  = Tag::firstOrCreate(['slug' => $slug], ['name' => $name]);
+                    $slug = Str::slug($name, '-')  ?: Str::random(8);
+                    $tag  = Tag::firstOrCreate(['name' => $name],['slug' => $slug]);
                     return $tag->id;
                 })->all();
 
@@ -213,25 +214,23 @@ class RecipeController extends Controller
             $recipe->main_image_path = $path;
         }
 
-        $recipe->fill([
-            'category_id'     => $validated['category_id'],
-            'title'           => $validated['title'],
-            'description'     => $validated['description'] ?? null,
-            'servings'        => $validated['servings'] ?? null,
-            'total_minutes'   => $validated['total_minutes'] ?? null,
-        ])->save();
+        $recipe->fill($validated);
+        $recipe->save();
 
-        $ids = $validated['tag_ids'] ?? [];
+        $ids = collect($validated['tag_ids'] ?? []);
         $newIds = collect($validated['tag_names'] ?? [])
             ->map(fn($n) => trim($n))
             ->filter()
             ->map(function ($name) {
-                $slug = Str::slug($name, '-');
-                $tag  = Tag::firstOrCreate(['slug' => $slug], ['name' => $name]);
+                $slug = Str::slug($name, '-') ?: Str::random(8);
+                $tag  = Tag::firstOrCreate(['name' => $name],['slug' => $slug]);
                 return $tag->id;
             })->all();
-        $recipe->tags()->sync(array_unique(array_merge($ids, $newIds)));    
-
+        
+        $idsArr   = $ids->all(); 
+        $merged   = array_unique(array_merge($idsArr, $newIds));
+        $recipe->tags()->sync($merged);
+        
         $recipe->ingredients()->delete();
         foreach (($validated['ingredients'] ?? []) as $i => $ing) {
             if (!trim($ing['name'] ?? '')) continue;    

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Head, Link, useForm, usePage } from "@inertiajs/react";
+import { Head, Link, useForm, usePage, router } from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { route } from "ziggy-js";
 
 export default function EditRecipe() {
   const page = usePage();
@@ -87,6 +88,11 @@ export default function EditRecipe() {
     e.preventDefault();
     post(route("recipes.update", recipe.id), {
       preserveScroll: true,
+      replace: true,
+      onSuccess: () => {
+        const url = route("recipes.show", recipe.id) + (from ? `?from=${from}` : "");
+        router.visit(url, { replace:true, preserveScroll: true});
+      }
     });
   };
   
@@ -133,7 +139,7 @@ export default function EditRecipe() {
                       hover:bg-amber-600 active:bg-amber-700
                       disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
           >
-            保存
+            更新
           </button>
         </div>
       </header>
