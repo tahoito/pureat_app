@@ -30,7 +30,12 @@
 
 ## 📸 Screenshots
 
-（ここにアプリの画面キャプチャを載せると見やすい）
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/e1e557e6-cdce-4656-ad5c-a2e0a737c68f" width="200" title="Login"/> 
+  <img src="https://github.com/user-attachments/assets/12935ba7-6f32-4d2f-a39f-463668c662e6" width="200" title="Home"/> 
+  <img src="https://github.com/user-attachments/assets/5cddad1b-8039-4729-92e9-10bfc9ebc40e" width="200" title="Home2"/>
+  <img src="https://github.com/user-attachments/assets/bc222eff-8c5a-441a-9a42-f24bf7856578" width="200" title="Schopping-list"/> 
+</p>
 
 ---
 
