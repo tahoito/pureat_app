@@ -22,7 +22,6 @@ function RecipeCard({ r, highlight }) {
     typeof item?.total_minutes === "number" && !Number.isNaN(item.total_minutes)
       ? item.total_minutes
       : null;
-  const firstTag = Array.isArray(item?.tags) && item.tags.length > 0 ? item.tags[0] : null;
 
   return (
     <article
@@ -47,11 +46,18 @@ function RecipeCard({ r, highlight }) {
             )}
           </div>
 
-          {firstTag && (
-            <span className="inline-block px-2 py-0.5 rounded-full border border-main/20 bg-white text-gray-600 text-[11px]">
-              #{firstTag.name}
-            </span>
-          )}
+          {Array.isArray(r.tags) && r.tags.length > 0 && (
+            <div className="mt-1 flex flex-wrap gap-1">
+              {r.tags.slice(0, 3).map((t) => (
+                <span
+                  key={t.id}
+                  className="inline-block px-2 py-0.5 rounded-full border border-main/20 bg-white text-gray-600 text-[11px]"
+                >
+                  #{t.name}
+                </span>
+              ))}
+            </div>
+          )}  
         </div>
       </Link>
     </article>
