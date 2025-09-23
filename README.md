@@ -42,6 +42,9 @@
 
 ## 📦 Setup
 
+下記のコードをターミナルで実行後
+ブラウザで http://127.0.0.1:8000 を開けば動作します 🎉
+
 ```bash
 git clone <repo>
 cd recipe-app
@@ -49,5 +52,9 @@ composer install
 npm install
 cp .env.example .env
 php artisan key:generate
+touch database/database.sqlite
 php artisan migrate
+
+php artisan serve
 npm run dev
+
