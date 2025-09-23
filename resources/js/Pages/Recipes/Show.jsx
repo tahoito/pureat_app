@@ -11,6 +11,7 @@ export default function RecipeShow() {
     const search = typeof window !== "undefined" ? window.location.search : "";
     const params = new URLSearchParams(search);
     const from = params.get("from");
+    const updated = params.get("updated") === "1";
 
     const fallback = 
         from === "favorites"
@@ -23,12 +24,14 @@ export default function RecipeShow() {
     const goBack = React.useCallback (() => {
         if(from) {
             router.visit(fallback,{ replace:true, preserveScroll:true});
-        }else if (typeof window !== "undefined" && window.history.length > 1){
+        }else if(updated){
+            router.visit(route("home.index"),{replace:true});
+        }else if(typeof window !== 'undefined' && window.history.length>1){
             window.history.back();
         }else{
-            router.visit(route("home.index"),{replace:true});
+            router.visit(route('home.index'),{ replace:true });
         }
-    },[from, fallback]);
+    },[from, fallback, updated]);
 
     const img =
         recipe.main_image_url

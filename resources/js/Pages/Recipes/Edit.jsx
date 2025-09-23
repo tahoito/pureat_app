@@ -90,8 +90,14 @@ export default function EditRecipe() {
       preserveScroll: true,
       replace: true,
       onSuccess: () => {
-        const url = route("recipes.show", recipe.id) + (from ? `?from=${from}` : "");
-        router.visit(url, { replace:true, preserveScroll: true});
+        const q = { updated: 1 };
+        if (from) q.from = from;
+
+        router.get(
+          route('recipes.show', recipe.id),
+          q,
+          { replace: true, preserveScroll: true }
+        );
       }
     });
   };
