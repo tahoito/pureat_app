@@ -9,7 +9,7 @@ const items = [
     { href:"/history", label:"閲覧履歴",icon:faClock, match:"/history"},
     { href:"/add", label:"追加する",icon:faPlus, match:"/add"},
     { href:"/favorites", label:"お気に入り",icon:faHeart, match:"/favorites"},
-    { href:"/shopping-list", label:"買い物リスト",icon:faListSquares, match:"/shopping_list"},
+    { href:"/shopping-list", label:"買い物リスト",icon:faListSquares, match:"/shopping-list"},
 ];
 
 export default function BottomNav(){
