@@ -3,14 +3,22 @@ import BottomNav from "@/Components/BottomNav";
 
 export default function AppShell({ title, children }) {
   return (
-    <div className="min-h-svh flex flex-col bg-base text-text">
-      
-      {/* メイン。下ナビの分だけ余白を足して被らないようにする */}
-      <main className="flex-1 pb-[calc(64px+env(safe-area-inset-bottom))]">
+    <div
+      className="
+        flex flex-col h-screen
+        bg-base text-text
+      "
+      style={{ WebkitOverflowScrolling: "touch" }}
+    >
+      <main
+        className="
+          flex-1 overflow-y-auto
+          pb-[calc(64px+env(safe-area-inset-bottom))]
+        "
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
         {children}
       </main>
-
-      {/* 共通ボトムナビ */}
       <BottomNav />
     </div>
   );

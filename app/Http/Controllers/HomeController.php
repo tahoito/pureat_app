@@ -36,6 +36,7 @@ class HomeController extends Controller
         // 通常レシピ一覧
         // --------------------
         $recipes = Recipe::query()
+            ->where('user_id',auth()->id())
             ->select(['id','title','description','total_minutes','main_image_path'])
             ->with(['tags:id,name,slug','category:id,name,slug'])
             ->when($q !== '', function ($query) use ($q) {
@@ -71,7 +72,8 @@ class HomeController extends Controller
         // --------------------
         // おすすめレシピ（スコア計算）
         // --------------------
-        $all = Recipe::with(['tags:id,name,slug','category:id,name,slug'])
+        $all = Recipe::where('user_id',auth()->id())
+            ->with(['tags:id,name,slug','category:id,name,slug'])
             ->withCount([
                 'favoriters as favorites_count',
                 'viewHistories as recent_views' => fn($q) =>
