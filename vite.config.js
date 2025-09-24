@@ -1,21 +1,33 @@
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
-import react from '@vitejs/plugin-react';
-import { VitePWA } from 'vite-plugin-pwa';
+import { defineConfig } from 'vite'
+import laravel from 'laravel-vite-plugin'
+import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  // ← これがかなり重要。絶対URLを出させない
+  base: '/',
+
   plugins: [
     laravel({
+      // CSSもあるなら ['resources/css/app.css', 'resources/js/app.jsx'] にしてOK
       input: 'resources/js/app.jsx',
       refresh: true,
     }),
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // public 配下の静的アセットを確実にキャッシュへ
+      includeAssets: [
+        'offline.html',
+        'icons/icon-192.png',
+        'icons/icon-512.png',
+        // 必要なら 'icons/apple-touch-icon.png', 'favicon.ico' なども
+      ],
       manifest: {
         name: 'RecipeApp',
         short_name: 'Recipe',
         start_url: '/',
+        scope: '/',                // ← 追加：PWAのスコープを明示
         display: 'standalone',
         background_color: '#ffffff',
         theme_color: '#F59E0B',
@@ -25,7 +37,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // HTML ナビゲーション時は offline.html にフォールバック
+        // オフライン時のフォールバック
         navigateFallback: '/offline.html',
 
         runtimeCaching: [
@@ -54,4 +66,16 @@ export default defineConfig({
       },
     }),
   ],
-});
+
+  // ← HMR を ngrok の https ページ上で使うなら有効化。
+  // 本番ビルドだけで見るなら不要。
+  // server: {
+  //   https: true,
+  //   host: true,
+  //   hmr: {
+  //     protocol: 'wss',
+  //     host: 'mabel-bicolor-approvably.ngrok-free.dev',
+ //     clientPort: 443,
+  //   },
+  // },
+})
