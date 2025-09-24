@@ -24,22 +24,25 @@ class RecipeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title'          => ['required','string','max:255'],
-            'description'    => ['nullable','string'],
-            'servings'       => ['nullable','integer','min:1'],
-            'total_minutes'  => ['nullable','integer','min:0'],
-            'category_id'    => ['required','exists:categories,id'],
-            'tag_ids'        => ['array'],
-            'tag_ids.*'      => ['integer','exists:tags,id'],  // ★ exists に修正
-            'tag_names'      => ['array'],                      // ★ 新規タグ名
-            'tag_names.*'    => ['string','max:30'],
-            'main_image'     => ['nullable','image','max:5120'],
-            'ingredients'            => ['array'],
-            'ingredients.*.name'     => ['required_with:ingredients','string','max:255'],
-            'ingredients.*.amount'   => ['nullable','string','max:255'],  // 225→255でもOK
+            'title'         => ['required', 'string', 'max:255'],
+            'description'   => ['nullable', 'string'],
+            'servings'      => ['nullable', 'integer', 'min:1'],
+            'total_minutes' => ['nullable', 'integer', 'min:0'],
+            'category_id'   => ['required', 'exists:categories,id'],
 
-            'steps'       => ['array'],
-            'steps.*'     => ['required','string'],
+            'tag_ids'       => ['nullable', 'array'],
+            'tag_ids.*'     => ['integer', 'exists:tags,id'],
+            'tag_names'     => ['nullable', 'array'],
+            'tag_names.*'   => ['string', 'max:30'],
+
+            'main_image'    => ['nullable', 'image', 'max:5120'],
+
+            'ingredients'              => ['nullable', 'array'],
+            'ingredients.*.name'       => ['required_with:ingredients', 'string', 'max:255'],
+            'ingredients.*.amount'     => ['nullable', 'string', 'max:255'],
+
+            'steps'         => ['nullable', 'array'],
+            'steps.*'       => ['required', 'string', 'max:2000'],
         ]);
 
         

@@ -16,10 +16,12 @@ return new class extends Migration
             $table->foreignId('recipe_id')->constrained()->cascadeOnDelete();
             $table->unsignedInteger('position')->default(1);
             $table->string('name');
-            $table->string('amount')->nullable();
+            $table->string('amount')->nullable(); 
             $table->timestamps();
         });
-    }
+
+      
+}
 
     /**
      * Reverse the migrations.

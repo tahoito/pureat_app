@@ -72,6 +72,8 @@ class HomeController extends Controller
         // --------------------
         // おすすめレシピ（スコア計算）
         // --------------------
+        // RecipeController@index
+
         $all = Recipe::where('user_id',auth()->id())
             ->with(['tags:id,name,slug','category:id,name,slug'])
             ->withCount([

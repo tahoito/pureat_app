@@ -26,14 +26,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // レシピ CRUD
     Route::get('/add', [RecipeController::class, 'create'])->name('recipes.add');
     Route::post('/recipes', [RecipeController::class, 'store'])->name('recipes.store');
-    Route::get('/recipes/{recipe}', [RecipeController::class, 'show'])->name('recipes.show');
-    Route::get('/recipes/{recipe}/edit', [RecipeController::class, 'edit'])->name('recipes.edit');     // ★ 統一
-    Route::put('/recipes/{recipe}', [RecipeController::class, 'update'])->name('recipes.update');      // ★ 統一
+    Route::get('/recipes/{recipe}', [RecipeController::class, 'show'])->can('view', 'recipe')->name('recipes.show');
+    Route::get('/recipes/{recipe}/edit', [RecipeController::class, 'edit'])->can('update', 'recipe')->name('recipes.edit');
+    Route::put('/recipes/{recipe}', [RecipeController::class, 'update'])->can('update', 'recipe')->name('recipes.update');
 
+    
     // 閲覧履歴
     Route::get('history', [HistoryController::class, 'index'])->name('history.index');
     Route::delete('history/clear', [HistoryController::class, 'clear'])->name('history.clear');
-    Route::delete('history/{recipe}', [HistoryController::class, 'destroy'])->name('history.destroy'); // ★ name 追加
+    Route::delete('history/{recipe}', [HistoryController::class, 'destroy'])->can('delete', 'recipe')->name('history.destroy');
 
     // お気に入り
     Route::post('/recipes/{recipe}/favorite', [FavoriteController::class,'toggle'])
