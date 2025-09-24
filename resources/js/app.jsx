@@ -16,3 +16,17 @@ createInertiaApp({
   },
   progress: { color: '#4B5563' },
 });
+
+// PWA: service worker を登録
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+      // Workbox の自動更新メッセ対応（任意）
+      // const wb = new (await import('workbox-window')).Workbox('/sw.js');
+      // wb.addEventListener('waiting', () => wb.messageSkipWaiting());
+    } catch (e) {
+      console.log('SW registration failed', e);
+    }
+  });
+}
