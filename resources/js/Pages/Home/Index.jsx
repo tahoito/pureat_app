@@ -234,7 +234,7 @@ export default function HomeIndex() {
                   aria-pressed={active}
                 >
                   <img
-                    src={c.image_url}
+                    src={c.image_src} 
                     alt={c.name}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     loading="eager"
