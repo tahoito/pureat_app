@@ -23,8 +23,7 @@ export default defineConfig({
 
       includeAssets: [
         'offline.html',
-        'icons/icon-192.png',
-        'icons/icon-512.png',
+        'images/recipe_icon.png',
       ],
       manifest: {
         name: 'RecipeApp',
@@ -35,8 +34,8 @@ export default defineConfig({
         background_color: '#ffffff',
         theme_color: '#F59E0B',
         icons: [
-          { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: '/images/recipe_icon.png', sizes: '192x192', type: 'image/png' },
+          { src: '/images/recipe_icon.png', sizes: '512x512', type: 'image/png' },
         ],
       },
       workbox: {

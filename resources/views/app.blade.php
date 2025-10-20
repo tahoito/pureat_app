@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="default">
-        <link rel="apple-touch-icon" href="/icons/icon-192.png">
+        <link rel="apple-touch-icon" href="/images/recipe_icon.png">
 
         <!-- manifest は VitePWA が head に注入するので基本不要だが、明示したいなら： -->
         <link rel="manifest" href="/manifest.webmanifest">
