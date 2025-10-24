@@ -4,7 +4,7 @@ export default function Guest({ children }) {
       <div className="w-full max-w-[390px]">
         {/* タイトル（Tastie） */}
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold text-main">Tastie</h1>
+          <h1 className="text-2xl font-semibold text-main">pureat</h1>
         </div>
 
         {/* カード枠 */}

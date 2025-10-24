@@ -1,6 +1,6 @@
 {
-  "name": "Tastie",
-  "short_name": "Tastie",
+  "name": "pureat",
+  "short_name": "pureat",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
