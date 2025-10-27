@@ -31,7 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/recipes/{recipe}', [RecipeController::class, 'update'])->can('update', 'recipe')->name('recipes.update');
 
     
-    // 閲覧履歴
+    // 調味料リスト
     Route::get('history', [HistoryController::class, 'index'])->name('history.index');
     Route::delete('history/clear', [HistoryController::class, 'clear'])->name('history.clear');
     Route::delete('history/{recipe}', [HistoryController::class, 'destroy'])->can('delete', 'recipe')->name('history.destroy');

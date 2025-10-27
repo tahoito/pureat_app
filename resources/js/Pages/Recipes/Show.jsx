@@ -91,7 +91,7 @@ export default function RecipeShow() {
             text-xs font-medium whitespace-nowrap shadow-sm transition
             ${added
             ? "bg-main2 text-white border border-main2"
-            : "bg-amber-500 text-white hover:bg-amber-600 active:scale-[0.98]"} 
+            : "bg-main2 text-white hover:bg-amber-600 active:scale-[0.98]"} 
             disabled:opacity-60 disabled:cursor-not-allowed`}
         >
         <FontAwesomeIcon
@@ -209,7 +209,7 @@ export default function RecipeShow() {
                                     </span>
                                 )}
                             </div>
-                            <ol className="mt-3 space-y-2.5 list-decimal pl-6 marker:font-semibold marker:text-amber-500">
+                            <ol className="mt-3 space-y-2.5 list-decimal pl-6 marker:font-semibold marker:text-main2">
                                 {recipe.steps.map((st, i) => (
                                     <li key={st.id ?? i} className="text-sm text-gray-800 leading-relaxed">
                                         {st.body}

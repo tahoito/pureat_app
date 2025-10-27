@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;   
 use Illuminate\Support\Arr;           
 use App\Models\{Recipe, Category, Tag, Ingredient, Step, ViewHistory};
+use App\Rules\SimpleNoNoTerms;
 
 class RecipeController extends Controller
 {
@@ -23,9 +24,10 @@ class RecipeController extends Controller
 
     public function store(Request $request)
     {
+        $no = new SimpleNoNoTerms();
         $validated = $request->validate([
-            'title'         => ['required', 'string', 'max:255'],
-            'description'   => ['nullable', 'string'],
+            'title'         => ['required', 'string', 'max:255',$no],
+            'description'   => ['nullable', 'string',$no],
             'servings'      => ['nullable', 'integer', 'min:1'],
             'total_minutes' => ['nullable', 'integer', 'min:0'],
             'category_id'   => ['required', 'exists:categories,id'],
@@ -38,11 +40,11 @@ class RecipeController extends Controller
             'main_image'    => ['nullable', 'image', 'max:5120'],
 
             'ingredients'              => ['nullable', 'array'],
-            'ingredients.*.name'       => ['required_with:ingredients', 'string', 'max:255'],
+            'ingredients.*.name'       => ['required_with:ingredients', 'string', 'max:255',$no],
             'ingredients.*.amount'     => ['nullable', 'string', 'max:255'],
 
             'steps'         => ['nullable', 'array'],
-            'steps.*'       => ['required', 'string', 'max:2000'],
+            'steps.*'       => ['required', 'string', 'max:2000',$no],
         ]);
 
         
@@ -193,9 +195,10 @@ class RecipeController extends Controller
 
     public function update(Request $request, Recipe $recipe)
     {
+        $no = new SimpleNoNoTerms();
         $validated = $request->validate([
-            'title'          => ['required','string','max:255'],
-            'description'    => ['nullable','string'],
+            'title'          => ['required','string','max:255',$no],
+            'description'    => ['nullable','string',$no],
             'servings'       => ['nullable','integer','min:1'],
             'total_minutes'  => ['nullable','integer','min:0'],
             'category_id'    => ['required','exists:categories,id'],
@@ -205,11 +208,11 @@ class RecipeController extends Controller
             'tag_names.*'    => ['string','max:30'],
             'main_image'     => ['nullable','image','max:5120'],
             'ingredients'            => ['array'],
-            'ingredients.*.name'     => ['required_with:ingredients','string','max:255'],
+            'ingredients.*.name'     => ['required_with:ingredients','string','max:255',$no],
             'ingredients.*.amount'   => ['nullable','string','max:255'],  // 225→255でもOK
 
             'steps'       => ['array'],
-            'steps.*'     => ['required','string'],
+            'steps.*'     => ['required','string',$no],
         ]);
 
         if($request->hasFile('main_image')){

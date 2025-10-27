@@ -40,7 +40,7 @@ export default function EditRecipe() {
   const [tagInput, setTagInput] = useState("");
 
   const TAG_ACTIVE =
-    "px-3 py-1 rounded-full border text-sm bg-amber-500 border-amber-500 text-white";
+    "px-3 py-1 rounded-full border text-sm bg-main2 border-main2 text-white";
   const TAG_INACTIVE =
     "px-3 py-1 rounded-full border text-sm bg-white border-main/30 text-gray-700";
 
@@ -141,7 +141,7 @@ export default function EditRecipe() {
             type="submit"
             form="editForm"
             disabled={processing}
-            className="px-3 h-9 text-white rounded-lg bg-amber-500 text-sm font-semibold 
+            className="px-3 h-9 text-white rounded-lg bg-main2 text-sm font-semibold 
                       hover:bg-amber-600 active:bg-amber-700
                       disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
           >
@@ -386,7 +386,7 @@ export default function EditRecipe() {
             <ol className="space-y-2">
               {data.steps.map((s, idx) => (
                 <li key={idx} className="flex items-start gap-2">
-                  <span className="mt-2 w-6 h-6 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center">
+                  <span className="mt-2 w-6 h-6 rounded-full bg-main2 text-white text-xs flex items-center justify-center">
                     {idx + 1}
                   </span>
                   <textarea

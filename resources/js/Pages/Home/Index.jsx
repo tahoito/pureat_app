@@ -114,7 +114,7 @@ export default function HomeIndex() {
         h-6 px-2.5 rounded-full border text-xs
         ${
           active
-            ? "bg-amber-500 text-white border-amber-500"
+            ? "bg-main2 text-white border-main2"
             : "bg-white text-gray-600"
         }`}
       aria-selected={active}
