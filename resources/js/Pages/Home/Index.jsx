@@ -228,7 +228,7 @@ export default function HomeIndex() {
                   className={`relative h-16 rounded-xl overflow-hidden group border
                     ${
                       active
-                        ? "ring-2 ring-amber-400 border-amber-400"
+                        ? "ring-2 ring-main2 border-main2"
                         : "border-main/30 hover:border-main/50"
                     }`}
                   aria-pressed={active}

@@ -36,7 +36,7 @@ class HomeController extends Controller
         // 通常レシピ一覧
         // --------------------
         $recipes = Recipe::query()
-            ->where('user_id',auth()->id())
+            //->where('user_id',auth()->id())
             ->select(['id','title','description','total_minutes','main_image_path'])
             ->with(['tags:id,name,slug','category:id,name,slug'])
             ->when($q !== '', function ($query) use ($q) {
