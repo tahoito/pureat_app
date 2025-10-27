@@ -21,6 +21,8 @@ export default {
                 text:  "#2F3E36",  
                 accent:"#A8C686",   
                 main2: "#88A47C", 
+                accent2:"#304c00ff",
+                heart:"#F4AFAF",
                 }
 
         },

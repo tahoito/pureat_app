@@ -141,8 +141,8 @@ export default function EditRecipe() {
             type="submit"
             form="editForm"
             disabled={processing}
-            className="px-3 h-9 text-white rounded-lg bg-main2 text-sm font-semibold 
-                      hover:bg-amber-600 active:bg-amber-700
+            className="px-3 h-9 text-white rounded-lg bg-accent text-sm font-semibold 
+                      hover:bg-accent2 active:bg-accent2
                       disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
           >
             更新

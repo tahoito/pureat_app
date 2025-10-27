@@ -90,8 +90,8 @@ export default function RecipeShow() {
         className={`inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full 
             text-xs font-medium whitespace-nowrap shadow-sm transition
             ${added
-            ? "bg-main2 text-white border border-main2"
-            : "bg-main2 text-white hover:bg-amber-600 active:scale-[0.98]"} 
+            ? "bg-accent2 text-white border border-accent2"
+            : "bg-accent2 text-white hover:bg-accent2 active:scale-[0.98]"} 
             disabled:opacity-60 disabled:cursor-not-allowed`}
         >
         <FontAwesomeIcon
@@ -134,8 +134,8 @@ export default function RecipeShow() {
                             recipeId={recipe.id}
                             initial={isFavorite}
                             iconOnly
-                            activeBg="text-accent"
-                            inactiveBg="text-white/90"
+                            activeBg="text-heart"
+                            inactiveBg="text-heart"
                         />
                     </div>
                 </div>

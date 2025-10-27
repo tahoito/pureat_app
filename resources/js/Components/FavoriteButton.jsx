@@ -9,7 +9,7 @@ export default function FavoriteButton({
   initial = false,
   iconOnly = false,
   className = "",
-  activeColor = "text-accent",     // ← ここを accent でOK
+  activeColor = "text-heart",     // ← ここを accent でOK
   inactiveColor = "text-white/90",
 }) {
   const [fav, setFav] = useState(!!initial);
