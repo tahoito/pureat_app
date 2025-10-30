@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\FavoriteController;
-use App\Http\Controllers\HistoryController;   // ★ 追加
+use App\Http\Controllers\SeasoningController;   // ★ 追加
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\ShoppingListController;  
 use Illuminate\Support\Facades\Route;
@@ -32,9 +32,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     
     // 調味料リスト
-    Route::get('seasoning', [HistoryController::class, 'index'])->name('seasoning.index');
-   
-    
+    Route::get('seasoning', [SeasoningController::class, 'index'])->name('seasoning.index');
+    Route::get('/seasonings/{seasoning:slug}', [SeasoningController::class,'show'])->name('seasonings.show');
+
     // お気に入り
     Route::post('/recipes/{recipe}/favorite', [FavoriteController::class,'toggle'])
         ->name('recipes.favorite.toggle');
