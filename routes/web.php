@@ -32,10 +32,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     
     // 調味料リスト
-    Route::get('history', [HistoryController::class, 'index'])->name('history.index');
-    Route::delete('history/clear', [HistoryController::class, 'clear'])->name('history.clear');
-    Route::delete('history/{recipe}', [HistoryController::class, 'destroy'])->can('delete', 'recipe')->name('history.destroy');
-
+    Route::get('seasoning', [HistoryController::class, 'index'])->name('seasoning.index');
+   
+    
     // お気に入り
     Route::post('/recipes/{recipe}/favorite', [FavoriteController::class,'toggle'])
         ->name('recipes.favorite.toggle');
