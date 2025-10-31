@@ -13,7 +13,7 @@ export default function SeasoningCard({ item }) {
   return (
     <Link
       href={route("seasonings.show", item.slug)}
-      className="bg-white rounded-lg overflow-hidden shadow-sm border hover:shadow-md transition"
+      className="bg-white rounded-lg overflow-hidden shadow-sm border"
     >
       <img src={img} alt={item.name} className="w-full h-28 object-cover" />
       <div className="p-2">

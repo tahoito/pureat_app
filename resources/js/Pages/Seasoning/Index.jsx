@@ -3,7 +3,7 @@ import { Head, Link, usePage, router } from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faClock, faSliders } from "@fortawesome/free-solid-svg-icons";
-// SeasoningCard is unused here (list UI is commented out). Remove import to avoid build warnings.
+import SeasoningCard from "@/Components/SeasoningCard";
 import Modal from "@/Components/Modal";
 
 const GENRES = [
@@ -45,10 +45,10 @@ export default function SeasoningsIndex() {
     <AppShell title="調味料検索">
       <Head title="調味料検索" />
 
-      <div className="p-6 space-y-6">
+  <div className="p-6 pb-3 space-y-6">
         {/* 検索 */}
         <form
-          className="relative"
+          className="relative mb-1"
           onSubmit={(e) => {
             e.preventDefault();
             router.get(
@@ -62,7 +62,7 @@ export default function SeasoningsIndex() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             className="w-full h-12 pl-4 pr-10 rounded-full border border-main/40 outline-none bg-white"
-            placeholder="材料や料理名で検索"
+            placeholder="調味料名や原材料で検索"
           />
           <button
             type="submit"
@@ -73,8 +73,8 @@ export default function SeasoningsIndex() {
           </button>
         </form>
 
-        <section>
-          <div className="px-5 pb-5 flex flex-wrap items-center gap-2">
+        <section className="mb-1">
+          <div className="px-2 pb-1 flex flex-wrap items-center gap-1">
           <button
             onClick={() => setOpenSheet(true)}
             aria-label="絞り込みを開く"
@@ -219,7 +219,34 @@ export default function SeasoningsIndex() {
         </div>
       </Modal>
 
+      <div className="pt-4">
+        {items?.data?.length ? (
+          <>
+            <div className="grid grid-cols-2 gap-4 sm:gap-5">
+              {items.data.map((seasoning) => (
+                <SeasoningCard key={seasoning.id} item={seasoning} />
+              ))}
+            </div>
+            {items.next_page_url && (
+              <div className="mt-2">
+                <Link
+                  href={items.next_page_url}
+                  preserveScroll
+                  preserveState
+                  className="block text-center text-sm text-amber-600"
+                >
+                  もっと見る
+                </Link>
+              </div>
+            )}
+          </>
+        ) : (
+          <p className="text-sm text-gray-500 text-center py-16">
+            該当する調味料が見つからないよ
+          </p>
+        )}
       </div>
-    </AppShell>
+  </div>
+  </AppShell>
   );
 }
