@@ -183,7 +183,7 @@ export default function HomeIndex() {
             {filters.q && (
               <button
                 onClick={() => clearFilter("q")}
-                className="px-3 h-8 rounded-full bg-amber-50 border border-amber-300 text-amber-700 text-sm"
+                className="px-3 h-8 rounded-full bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A] text-sm"
               >
                 検索: {filters.q} ×
               </button>
@@ -191,7 +191,7 @@ export default function HomeIndex() {
             {filters.category && (
               <button
                 onClick={() => clearFilter("category")}
-                className="px-3 h-8 rounded-full bg-amber-50 border border-amber-300 text-amber-700 text-sm"
+                className="px-3 h-8 rounded-full bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A] text-sm"
               >
                 カテゴリー:{" "}
                 {resolveCategoryLabel(filters.category, categories)} ×
@@ -200,7 +200,7 @@ export default function HomeIndex() {
             {filters.tag && (
               <button
                 onClick={() => clearFilter("tag")}
-                className="px-3 h-8 rounded-full bg-amber-50 border border-amber-300 text-amber-700 text-sm"
+                className="px-3 h-8 rounded-full bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A] text-sm"
               >
                 タグ: {resolveTagLabel(filters.tag, tags)} ×
               </button>
@@ -271,7 +271,7 @@ export default function HomeIndex() {
                   className={`px-2.5 h-8 rounded-full border text-sm flex items-center
                     ${
                       active
-                        ? "bg-amber-50 border-amber-300 text-amber-700"
+                        ? "bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A]"
                         : "bg-white border-main/30 hover:bg-base"
                     }`}
                 >

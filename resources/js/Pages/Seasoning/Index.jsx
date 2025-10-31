@@ -62,129 +62,164 @@ export default function SeasoningsIndex() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             className="w-full h-12 pl-4 pr-10 rounded-full border border-main/40 outline-none bg-white"
-            placeholder="調味料名・原材料名で検索"
+            placeholder="材料や料理名で検索"
           />
           <button
             type="submit"
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-lg"
             aria-label="検索"
           >
-            <FontAwesomeIcon icon={faSearch} className="text-main" />
-          </button>
-          <button
-            onClick={() => setOpenSheet(true)}
-            aria-label="絞り込みを開く"
-            className="p-2 rounded-full border text-main/80 border-main/30"
-          >
-            <FontAwesomeIcon icon={faSliders} />
+          <FontAwesomeIcon icon={faSearch} className="text-main" />
           </button>
         </form>
 
-        <div className="px-4 pb-3 flex items-center gap-2 overflow-x-auto">
+        <section>
+          <div className="px-5 pb-5 flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setOpenSheet(true)}
+            aria-label="絞り込みを開く"
+            className="p-2 rounded-full text-main2 shrink-0"
+          >
+            <FontAwesomeIcon icon={faSliders} />
+          </button>
+
           <button onClick={() => handleChip("all")
-            } className={`px-3 h-8 rounded-full border text-sm border ${
+            } className={`flex-1 min-w-0 inline-flex items-center justify-center whitespace-nowrap px-3 h-8 rounded-full border text-sm border ${
               !genre && !safety && sort === "popular"
-                ? "bg-amber-50 border-amber-300 text-amber-700"
+                ? "bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A]"
                 : "bg-white border-main/30 hover:bg-base"
             }`}
           >
             全て
           </button>
           <button onClick={() => handleChip("safe")}
-            className={`px-3 h-8 rounded-full border text-sm border ${
+            className={`flex-1 min-w-0 inline-flex items-center justify-center whitespace-nowrap px-3 h-8 rounded-full border text-sm border ${
               safety === "safe"
-                ? "bg-amber-50 border-amber-300 text-amber-700"
+                ? "bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A]"
                 : "bg-white border-main/30 hover:bg-base"
             }`}>安全
             </button>
-
-          <button onClick={() => handleChip("popular")}
-            className={`px-3 h-8 rounded-full border text-sm border ${
-              sort === "popular"
-                ? "bg-amber-50 border-amber-300 text-amber-700"
-                : "bg-white border-main/30 hover:bg-base"
-            }`}>人気
-            </button>
-          <button onClick={() => handleChip("cheap")}
-            className={`px-3 h-8 rounded-full border text-sm border ${
-              sort === "price"
-                ? "bg-amber-50 border-amber-300 text-amber-700"
-                : "bg-white border-main/30 hover:bg-base"
-            }`}>安い順
-            </button>
-        </div>
+            <button onClick={() => handleChip("popular")}
+              className={`flex-1 min-w-0 inline-flex items-center justify-center whitespace-nowrap px-3 h-8 rounded-full border text-sm border ${
+                sort === "popular"
+                  ? "bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A]"
+                  : "bg-white border-main/30 hover:bg-base"
+              }`}>人気
+              </button>
+            <button onClick={() => handleChip("cheap")}
+              className={`flex-1 min-w-0 inline-flex items-center justify-center whitespace-nowrap px-3 h-8 rounded-full border text-sm border ${
+                sort === "price"
+                  ? "bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A]"
+                  : "bg-white border-main/30 hover:bg-base"
+              }`}>安い順
+              </button>
+          </div>
+        </section>
 
         <Modal show={openSheet} onClose={() => setOpenSheet(false)}>
+        <div className="w-full max-w-screen-md mx-auto">
+          {/* ヘッダー */}
           <div className="px-4 py-3 border-b">
             <h3 className="text-base font-medium text-gray-800">ジャンル・絞り込み</h3>
           </div>
-        {/* ジャンル */}
-          <div className="mb-4">
-            <p className="text-sm text-gray-500 mb-2">ベース調味料</p>
-            <div className="flex flex-wrap gap-2">
-              {GENRES.map(g => (
-                <button key={g.key}
-                  onClick={() => setGenre(genre === g.key ? "" : g.key)}
-                  className={`px-3 py-1 rounded-full text-sm border transition
-                    ${genre===g.key ? "bg-[#C7D7B3] border-[#9EB18E]" : "bg-white border-gray-300"}`}>
-                  {g.label}
-                </button>
-              ))}
-            </div>
-          </div>
+
+          {/* コンテンツ */}
+          <div className="px-4 py-4 space-y-6">
+            {/* ジャンル */}
+            <section>
+              <p className="text-sm text-gray-500 mb-2">ベース調味料</p>
+              <div className="flex flex-wrap gap-2">
+                {GENRES.map((g) => (
+                  <button
+                    key={g.key}
+                    onClick={() => setGenre(genre === g.key ? "" : g.key)}
+                    className={`px-3 py-1.5 rounded-full text-sm border transition ${
+                      genre === g.key
+                        ? "bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A]"
+                        : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {g.label}
+                  </button>
+                ))}
+              </div>
+            </section>
+
             {/* 安全度 */}
-          <div className="mb-4">
-            <p className="text-sm text-gray-500 mb-2">安全度</p>
-            <div className="flex gap-2">
-              {[
-                {k:"safe", l:"4毒フリー"},
-                {k:"caution", l:"要注意（甘味料/添加）"},
-                {k:"ng", l:"NG（小麦/乳含む）"},
-              ].map(s=>(
-                <button key={s.k}
-                  onClick={()=> setSafety(safety===s.k ? "" : s.k)}
-                  className={`px-3 py-1 rounded-full text-sm border
-                    ${safety===s.k ? "bg-[#FFEAD1] border-amber-300" : "bg-white border-gray-300"}`}>
-                  {s.l}
-                </button>
-              ))}
+            <section>
+              <p className="text-sm text-gray-500 mb-2">安全度</p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { k: "safe", l: "4毒フリー" },
+                  { k: "caution", l: "要注意（甘味料/添加）" },
+                  { k: "ng", l: "NG（小麦/乳含む）" },
+                ].map((s) => (
+                  <button
+                    key={s.k}
+                    onClick={() => setSafety(safety === s.k ? "" : s.k)}
+                    className={`px-3 py-1.5 rounded-full text-sm border transition ${
+                      safety === s.k
+                        ? "bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A]"
+                        : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {s.l}
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            {/* 並び替え */}
+            <section>
+              <p className="text-sm text-gray-500 mb-2">並び替え</p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { k: "popular", l: "人気順" },
+                  { k: "updated", l: "新着順" },
+                  { k: "name", l: "名前順" },
+                  { k: "price", l: "価格順" },
+                ].map((o) => (
+                  <button
+                    key={o.k}
+                    onClick={() => setSort(o.k)}
+                    className={`px-3 py-1.5 rounded-full text-sm border transition ${
+                      sort === o.k
+                        ? "bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A]"
+                        : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {o.l}
+                  </button>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          {/* アクションバー（下部固定） */}
+          <div className="sticky bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t">
+            <div className="px-4 py-3 flex gap-2 max-w-screen-md mx-auto">
+              <button
+                onClick={() => {
+                  setGenre("");
+                  setSafety("");
+                  setSort("popular");
+                }}
+                className="flex-1 h-11 rounded-lg border text-gray-700 hover:bg-gray-50 transition"
+              >
+                リセット
+              </button>
+              <button
+                onClick={() => setOpenSheet(false)}
+                className="flex-1 h-11 rounded-lg bg-[#71896E] text-white hover:opacity-90 transition"
+              >
+                この条件で見る
+              </button>
             </div>
           </div>
-
-          {/* 並び替え */}
-          <div className="mb-6">
-            <p className="text-sm text-gray-500 mb-2">並び替え</p>
-            <div className="flex gap-2">
-              {[
-                {k:"popular", l:"人気順"},
-                {k:"updated", l:"新着順"},
-                {k:"name", l:"名前順"},
-                {k:"price", l:"価格順"},
-              ].map(o=>(
-                <button key={o.k}
-                  onClick={()=> setSort(o.k)}
-                  className={`px-3 py-1 rounded-full text-sm border
-                    ${sort===o.k ? "bg-[#E6EEE0] border-[#B9C9AB]" : "bg-white border-gray-300"}`}>
-                  {o.l}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* アクション */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => { setGenre(""); setSafety(""); setSort("popular"); }}
-              className="flex-1 py-2 rounded-lg border text-gray-700"
-            >リセット</button>
-            <button
-              onClick={() => setOpenSheet(false)}
-              className="flex-1 py-2 rounded-lg bg-[#71896E] text-white"
-            >この条件で見る</button>
-          </div>
-  </Modal>
-
         </div>
+      </Modal>
+
+      </div>
     </AppShell>
   );
 }
