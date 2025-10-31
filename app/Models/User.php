@@ -48,6 +48,6 @@ class User extends Authenticatable
     }
 
     public function recipes(){ return $this->hasMany(Recipe::class);}
-    public function viewHistories(){ return $this->hasMany(ViewHistories::class);}
+    //public function viewHistories(){ return $this->hasMany(ViewHistories::class);}
     public function favoriteRecipes(){ return $this->belongsToMany(Recipe::class, 'favorites')->withTimestamps(); }
 }

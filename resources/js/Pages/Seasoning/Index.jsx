@@ -16,7 +16,7 @@ const GENRES = [
 ]
 
 /* ---------------- Page ---------------- */
-export default function SeasoningIndex() {
+export default function SeasoningsIndex() {
   const { items, filters } = usePage().props;
   const [ q, setQ ] = useState(filters.q || "");
   const [ genre, setGenre ] = useState(filters.genre || "");
@@ -27,7 +27,7 @@ export default function SeasoningIndex() {
   
   useEffect(() => {
     const t = setTimeout(() => {
-  router.get(route("seasoning.index"), 
+  router.get(route("seasonings.index"), 
       { q, genre, sort, safety }, 
       { preserveState: true, replace: true });
     }, 450);
@@ -52,7 +52,7 @@ export default function SeasoningIndex() {
           onSubmit={(e) => {
             e.preventDefault();
             router.get(
-              route("seasoning.index"),
+              route("seasonings.index"),
               { ...filters, q: q || undefined },
               { preserveState: true, replace: true }
             );

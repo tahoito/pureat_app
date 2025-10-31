@@ -1,0 +1,38 @@
+import React from "react";
+import { Link } from "@inertiajs/react";
+
+function resolveImg(path) {
+  if (!path) return "/images/placeholder.jpeg";
+  if (path.startsWith("http")) return path;
+  return `/storage/${path.replace(/^\/?storage\//, "")}`;
+}
+
+export default function SeasoningCard({ item }) {
+  const img = resolveImg(item.image_path);
+
+  return (
+    <Link
+      href={route("seasonings.show", item.slug)}
+      className="bg-white rounded-lg overflow-hidden shadow-sm border hover:shadow-md transition"
+    >
+      <img src={img} alt={item.name} className="w-full h-28 object-cover" />
+      <div className="p-2">
+        <h3 className="text-sm font-medium line-clamp-1">{item.name}</h3>
+        {item.price && <p className="text-xs text-gray-500">{item.price}円</p>}
+
+        <div className="flex gap-1 mt-1 flex-wrap">
+          {item.gf && item.df && item.sf && item.af ? (
+            <span className="text-[10px] px-2 py-0.5 bg-[#D6E5C2] text-[#3B4A34] rounded-full">4毒フリー</span>
+          ) : (
+            <>
+              {!item.gf && <span className="text-[10px] px-2 bg-rose-100 text-rose-600 rounded-full">小麦</span>}
+              {!item.df && <span className="text-[10px] px-2 bg-yellow-100 text-yellow-600 rounded-full">乳</span>}
+              {!item.sf && <span className="text-[10px] px-2 bg-orange-100 text-orange-600 rounded-full">砂糖</span>}
+              {!item.af && <span className="text-[10px] px-2 bg-gray-100 text-gray-600 rounded-full">添加物</span>}
+            </>
+          )}
+        </div>
+      </div>
+    </Link>
+  );
+}

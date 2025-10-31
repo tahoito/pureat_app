@@ -74,16 +74,12 @@ class HomeController extends Controller
         // --------------------
         // RecipeController@index
 
-        $all = Recipe::where('user_id',auth()->id())
+        $all = Recipe::query()
             ->with(['tags:id,name,slug','category:id,name,slug'])
-            ->withCount([
-                'favoriters as favorites_count',
-                'viewHistories as recent_views' => fn($q) =>
-                    $q->where('viewed_at','>=',now()->subDays(30)),
-            ])
+            ->withCount(['favoriters as favorites_count']) // ← viewHistories は外す
             ->get();
 
-        // タグの利用回数を数える
+        // タグの利用回数（人気タグに少し加点）
         $tagUseCount = collect();
         foreach ($all as $r) {
             foreach ($r->tags as $t) {
@@ -93,17 +89,27 @@ class HomeController extends Controller
         $maxTagUse = $tagUseCount->max() ?: 1;
 
         // スコア付与
-        $recommended = $all->map(function($r) use ($tagUseCount, $maxTagUse) {
+        $recommended = $all->map(function ($r) use ($tagUseCount, $maxTagUse) {
             $score = 0;
-            $score += $r->favorites_count * 5; // お気に入りの多さ
-            $score += min(20, $r->recent_views * 3); // 最近の閲覧
-            if ($r->created_at >= now()->subDays(14)) $score += 10; // 新しさ
-            if ($r->is_recommended) $score += 15; // 管理者が手動でおすすめフラグ
 
+            // ① お気に入り数
+            $score += ($r->favorites_count ?? 0) * 5;
+
+            // ② 新しさ（14日以内なら+10、30日以内なら+5）
+            if ($r->created_at >= now()->subDays(14)) {
+                $score += 10;
+            } elseif ($r->created_at >= now()->subDays(30)) {
+                $score += 5;
+            }
+
+            // ③ 手動おすすめフラグ
+            if ($r->is_recommended) $score += 15;
+
+            // ④ タグの人気度（そのレシピが持つタグの平均人気を最大+15まで）
             if ($r->tags->count()) {
                 $sum = 0;
                 foreach ($r->tags as $t) {
-                    $use = (int)($tagUseCount[$t->id] ?? 0);
+                    $use = (int) ($tagUseCount[$t->id] ?? 0);
                     $sum += $use / $maxTagUse;
                 }
                 $score += (int) round(($sum / $r->tags->count()) * 15);
@@ -113,7 +119,7 @@ class HomeController extends Controller
             return $r;
         })
         ->sortByDesc('recommend_score')
-        ->take(8) // 上位8件だけ出す
+        ->take(8)
         ->values();
         
         return Inertia::render('Home/Index', [

@@ -32,7 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     
     // 調味料リスト
-    Route::get('seasoning', [SeasoningController::class, 'index'])->name('seasoning.index');
+    Route::get('seasonings', [SeasoningController::class, 'index'])->name('seasonings.index');
     Route::get('/seasonings/{seasoning:slug}', [SeasoningController::class,'show'])->name('seasonings.show');
 
     // お気に入り

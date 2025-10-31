@@ -6,7 +6,7 @@ import { faJar, faPlus, faHeart, faSearch, faListSquares } from "@fortawesome/fr
 
 const items = [
     { href:"/", label:"調べる",icon:faSearch, match:"/"},
-    { href:"/seasoning", label:"調味料検索",icon:faJar, match:"/seasoning"},
+    { href:"/seasonings", label:"調味料検索",icon:faJar, match:"/seasoning"},
     { href:"/add", label:"追加する",icon:faPlus, match:"/add"},
     { href:"/favorites", label:"お気に入り",icon:faHeart, match:"/favorites"},
     { href:"/shopping-list", label:"買い物リスト",icon:faListSquares, match:"/shopping-list"},

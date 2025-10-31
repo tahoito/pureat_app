@@ -35,7 +35,7 @@ class SeasoningController extends Controller
       ->select(['id','name','brand','slug','genre','price','image_path','gf','df','sf','af'])
       ->paginate(12)->withQueryString();
 
-    return Inertia::render('Seasonings/Index',[
+    return Inertia::render('Seasoning/Index',[
       'items'=>$items,
       'filters'=>[
         'q'=>$q,'genre'=>$genre,'safety'=>$safety,'alt_only'=>$altOnly,'sort'=>$sort,
@@ -45,7 +45,7 @@ class SeasoningController extends Controller
 
   public function show(Seasoning $seasoning){
     $seasoning->load(['recipes:id,title,main_image_path,total_minutes']);
-    return Inertia::render('Seasonings/Show',[
+    return Inertia::render('Seasoning/Show',[
       'item'=>[
         'id'=>$seasoning->id,
         'name'=>$seasoning->name,
