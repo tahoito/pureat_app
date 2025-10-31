@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;           
 use Illuminate\Support\Str;            
-use App\Models\{Recipe, Category, Tag, Ingredient, Step, ViewHistory, ShoppingListItem};
+use App\Models\{Recipe, Category, Tag, Ingredient, Step, ShoppingListItem};
 
 class ShoppingListController extends Controller
 {

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;           
 use Illuminate\Support\Str;   
 use Illuminate\Support\Arr;           
-use App\Models\{Recipe, Category, Tag, Ingredient, Step, ViewHistory};
+use App\Models\{Recipe, Category, Tag, Ingredient, Step};
 use App\Rules\SimpleNoNoTerms;
 
 class RecipeController extends Controller
@@ -115,21 +115,6 @@ class RecipeController extends Controller
     public function show(Request $request, Recipe $recipe)
     {
         $user = $request->user();
-
-        if($user){
-            $cutoff = now()->subMinutes(30);
-            $exists = ViewHistory::where('user_id',$user->id)
-                ->where('recipe_id',$recipe->id)
-                ->where('viewed_at','>=',$cutoff)
-                ->exists();
-            if(!$exists){
-                ViewHistory::create([
-                    'user_id'   => $user->id,
-                    'recipe_id' => $recipe->id,
-                    'viewed_at' => now(),
-                ]);
-            }
-        }
 
         $isFavorite = $request->user()
             ? $user->favoriteRecipes()->whereKey($recipe->id)->exists()

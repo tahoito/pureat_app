@@ -2,152 +2,48 @@ import React, { useState, useEffect } from "react";
 import { Head, Link, usePage, router } from "@inertiajs/react";
 import AppShell from "@/Layouts/AppShell";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faClock } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faClock, faSliders } from "@fortawesome/free-solid-svg-icons";
+// SeasoningCard is unused here (list UI is commented out). Remove import to avoid build warnings.
+import Modal from "@/Components/Modal";
 
-/* ---------------- RecipeCard ---------------- */
-function RecipeCard({ r, highlight }) {
-  const img =
-    r.main_image_url ??
-    (r.main_image_path ? `/storage/${r.main_image_path}` : null) ??
-    r.main_image ??
-    "/images/placeholder.jpeg";
-
-  const hasMinutes =
-    typeof r.total_minutes === "number" && !Number.isNaN(r.total_minutes)
-      ? r.total_minutes
-      : null;
-
-  return (
-    <article
-      className={`rounded-lg overflow-hidden border bg-white ${
-        Number(highlight) === r.id ? "ring-2 ring-amber-400" : ""
-      }`}
-    >
-      <Link href={route("recipes.show", r.id)} className="block">
-        <img
-          src={img}
-          alt={r.title}
-          className="w-full aspect-[4/3] object-cover"
-        />
-        <div className="p-2">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-medium line-clamp-1">{r.title}</p>
-            {hasMinutes && (
-              <div className="flex items-center gap-1 text-xs text-gray-500">
-                <FontAwesomeIcon icon={faClock} className="text-[11px]" />
-                <span>{hasMinutes}分</span>
-              </div>
-            )}
-          </div>
-          {Array.isArray(r.tags) && r.tags.length > 0 && (
-            <div className="mt-1 flex flex-wrap gap-1">
-              {r.tags.slice(0, 2).map((t) => (
-                <span
-                  key={t.id}
-                  className="inline-block px-2 py-0.5 rounded-full border border-main/20 bg-white text-gray-600 text-[11px]"
-                >
-                  #{t.name}
-                </span>
-              ))}
-            </div>
-          )}          
-        </div>
-      </Link>
-    </article>
-  );
-}
-
-/* ---------------- Debounce hook ---------------- */
-function useDebounce(value, delay = 300) {
-  const [v, setV] = useState(value);
-  useEffect(() => {
-    const id = setTimeout(() => setV(value), delay);
-    return () => clearTimeout(id);
-  }, [value, delay]);
-  return v;
-}
-
-function resolveCategoryLabel(val, categories) {
-  if (!val) return null;
-  const s = String(val);
-  const hit = categories.find(
-    (c) => String(c.id) === s || c.slug === s
-  );
-  return hit?.name ?? s;
-}
-function resolveTagLabel(val, tags) {
-  if (!val) return null;
-  const s = String(val);
-  const hit = tags.find(
-    (t) => String(t.id) === s || t.slug === s
-  );
-  return hit?.name ?? s;
-}
+const GENRES = [
+  { key: "soy sauce", label: "醤油" },
+  { key: "miso", label: "味噌" },
+  { key: "salt", label: "塩" },
+  { key: "vinegar", label: "酢" },
+  { key: "sweetener", label: "甘味料" },
+  { key: "oil", label: "油" },
+]
 
 /* ---------------- Page ---------------- */
-export default function HomeIndex() {
-  const {
-    categories = [],
-    tags = [],
-    recipes = { data: [] },
-    tab = "all",
-    filters = {},
-    recommended = [],
-    highlight,
-  } = usePage().props;
+export default function SeasoningIndex() {
+  const { items, filters } = usePage().props;
+  const [ q, setQ ] = useState(filters.q || "");
+  const [ genre, setGenre ] = useState(filters.genre || "");
+  const [ sort, setSort ] = useState(filters.sort || "name_asc");
+  const [ safety, setSafety ] = useState(filters.safety || "all");
 
-  const [q, setQ] = useState(filters?.q ?? "");
-  const debouncedQ = useDebounce(q, 300);
-
-  const activeCategory = filters?.category ?? null;
-  const activeTag = filters?.tag ?? null;
-
-  const hasFilter = !!(filters?.q || filters?.tag || filters?.category);
-  const useRecommended = !hasFilter && tab === "recommended";
-  const list = useRecommended ? recommended : recipes.data ?? [];
-
-  const Tab = ({ to, active, children }) => (
-    <Link
-      href={to}
-      preserveScroll
-      className={`inline-flex items-center justify-center
-        h-6 px-2.5 rounded-full border text-xs
-        ${
-          active
-            ? "bg-main2 text-white border-main2"
-            : "bg-white text-gray-600"
-        }`}
-      aria-selected={active}
-      role="tab"
-    >
-      {children}
-    </Link>
-  );
-
-  // 検索のデバウンス
+  const [ openSheet, setOpenSheet ] = useState(false);
+  
   useEffect(() => {
-    if ((filters?.q ?? "") === debouncedQ) return;
-    router.get(
-      route("home.index"),
-      { ...filters, q: debouncedQ || undefined },
-      { preserveState: true, preserveScroll: true, replace: true }
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQ]);
+    const t = setTimeout(() => {
+  router.get(route("seasoning.index"), 
+      { q, genre, sort, safety }, 
+      { preserveState: true, replace: true });
+    }, 450);
+    return () => clearTimeout(t);
+  }, [q, genre, sort, safety]);
 
-  // フィルタ解除
-  function clearFilter(key) {
-    const next = { ...filters, [key]: undefined };
-    router.get(route("home.index"), next, {
-      preserveState: true,
-      replace: true,
-      preserveScroll: true,
-    });
+  const handleChip = (type) =>  {
+    if (type === "all") { setGenre(""); setSafety(""); setSort("popular"); return; }
+    if (type === "safe") { setSafety(safety === "safe" ? "" : "safe"); return;}
+    if (type === "popular") { setSort("popular"); return; }
+    if (type === "cheap") { setSort(sort === "price" ? "popular": "price"); return;}
   }
 
   return (
-    <AppShell title="ホーム">
-      <Head title="ホーム" />
+    <AppShell title="調味料検索">
+      <Head title="調味料検索" />
 
       <div className="p-6 space-y-6">
         {/* 検索 */}
@@ -156,7 +52,7 @@ export default function HomeIndex() {
           onSubmit={(e) => {
             e.preventDefault();
             router.get(
-              route("home.index"),
+              route("seasoning.index"),
               { ...filters, q: q || undefined },
               { preserveState: true, replace: true }
             );
@@ -166,7 +62,7 @@ export default function HomeIndex() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             className="w-full h-12 pl-4 pr-10 rounded-full border border-main/40 outline-none bg-white"
-            placeholder="材料や料理名で検索"
+            placeholder="調味料名・原材料名で検索"
           />
           <button
             type="submit"
@@ -175,168 +71,120 @@ export default function HomeIndex() {
           >
             <FontAwesomeIcon icon={faSearch} className="text-main" />
           </button>
+          <button
+            onClick={() => setOpenSheet(true)}
+            aria-label="絞り込みを開く"
+            className="p-2 rounded-full border text-main/80 border-main/30"
+          >
+            <FontAwesomeIcon icon={faSliders} />
+          </button>
         </form>
 
-        {/* 現在のフィルタ（チップ） */}
-        {hasFilter && (
-          <div className="flex flex-wrap gap-2">
-            {filters.q && (
-              <button
-                onClick={() => clearFilter("q")}
-                className="px-3 h-8 rounded-full bg-amber-50 border border-amber-300 text-amber-700 text-sm"
-              >
-                検索: {filters.q} ×
-              </button>
-            )}
-            {filters.category && (
-              <button
-                onClick={() => clearFilter("category")}
-                className="px-3 h-8 rounded-full bg-amber-50 border border-amber-300 text-amber-700 text-sm"
-              >
-                カテゴリー:{" "}
-                {resolveCategoryLabel(filters.category, categories)} ×
-              </button>
-            )}
-            {filters.tag && (
-              <button
-                onClick={() => clearFilter("tag")}
-                className="px-3 h-8 rounded-full bg-amber-50 border border-amber-300 text-amber-700 text-sm"
-              >
-                タグ: {resolveTagLabel(filters.tag, tags)} ×
-              </button>
-            )}
-          </div>
-        )}
+        <div className="px-4 pb-3 flex items-center gap-2 overflow-x-auto">
+          <button onClick={() => handleChip("all")
+            } className={`px-3 h-8 rounded-full border text-sm border ${
+              !genre && !safety && sort === "popular"
+                ? "bg-amber-50 border-amber-300 text-amber-700"
+                : "bg-white border-main/30 hover:bg-base"
+            }`}
+          >
+            全て
+          </button>
+          <button onClick={() => handleChip("safe")}
+            className={`px-3 h-8 rounded-full border text-sm border ${
+              safety === "safe"
+                ? "bg-amber-50 border-amber-300 text-amber-700"
+                : "bg-white border-main/30 hover:bg-base"
+            }`}>安全
+            </button>
 
-        {/* カテゴリー */}
-        <section>
-          <h2 className="text-lg mb-2 text-text">カテゴリー</h2>
-          <div className="grid grid-cols-3 gap-3">
-            {categories.slice(0, 9).map((c) => {
-              const key = c.slug ?? c.id;
-              const active = activeCategory === key;
-              return (
-                <Link
-                  key={c.id}
-                  href={route("home.index", {
-                    ...filters,
-                    q: filters.q ?? undefined,
-                    category: key,
-                    tab: "all",
-                  })}
-                  preserveScroll
-                  className={`relative h-16 rounded-xl overflow-hidden group border
-                    ${
-                      active
-                        ? "ring-2 ring-main2 border-main2"
-                        : "border-main/30 hover:border-main/50"
-                    }`}
-                  aria-pressed={active}
-                >
-                  <img
-                    src={c.image_src} 
-                    alt={c.name}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="eager"
-                    decoding="async"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 to-transparent" />
-                  <span className="absolute left-2 bottom-2 z-10 text-white text-xs font-semibold drop-shadow">
-                    {c.icon}
-                    {c.name}
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* タグ */}
-        <section>
-          <h2 className="text-lg mb-2 text-text">タグ</h2>
-          <div className="flex flex-wrap gap-1">
-            {tags.map((t) => {
-              const key = t.slug ?? t.id;
-              const active = activeTag === key;
-              return (
-                <Link
-                  key={key}
-                  href={route("home.index", {
-                    ...filters,
-                    q: filters.q ?? undefined,
-                    tag: key,
-                    tab: "all",
-                  })}
-                  preserveScroll
-                  className={`px-2.5 h-8 rounded-full border text-sm flex items-center
-                    ${
-                      active
-                        ? "bg-amber-50 border-amber-300 text-amber-700"
-                        : "bg-white border-main/30 hover:bg-base"
-                    }`}
-                >
-                  #{t.name}
-                </Link>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* レシピ（おすすめ | すべて） */}
-        <div className="flex items-center justify-between pt-1">
-          <h2 className="text-lg mb-2 text-text">レシピ</h2>
-          <div className="flex gap-2 text-sm">
-            <Tab
-              to={route("home.index", { ...filters, tab: "recommended" })}
-              active={tab === "recommended"}
-            >
-              おすすめ
-            </Tab>
-            <Tab
-              to={route("home.index", { ...filters, tab: "all" })}
-              active={tab === "all"}
-            >
-              すべて
-            </Tab>
-          </div>
+          <button onClick={() => handleChip("popular")}
+            className={`px-3 h-8 rounded-full border text-sm border ${
+              sort === "popular"
+                ? "bg-amber-50 border-amber-300 text-amber-700"
+                : "bg-white border-main/30 hover:bg-base"
+            }`}>人気
+            </button>
+          <button onClick={() => handleChip("cheap")}
+            className={`px-3 h-8 rounded-full border text-sm border ${
+              sort === "price"
+                ? "bg-amber-50 border-amber-300 text-amber-700"
+                : "bg-white border-main/30 hover:bg-base"
+            }`}>安い順
+            </button>
         </div>
 
-        <div className="pt-4">
-          {!list.length ? (
-            <p className="text-sm text-gray-500">該当レシピがないよ</p>
-          ) : useRecommended ? (
-            <div className="grid grid-cols-2 gap-3">
-              {list.map((r) => (
-                <RecipeCard key={`rec-${r.id}`} r={r} highlight={highlight} />
+        <Modal show={openSheet} onClose={() => setOpenSheet(false)}>
+          <div className="px-4 py-3 border-b">
+            <h3 className="text-base font-medium text-gray-800">ジャンル・絞り込み</h3>
+          </div>
+        {/* ジャンル */}
+          <div className="mb-4">
+            <p className="text-sm text-gray-500 mb-2">ベース調味料</p>
+            <div className="flex flex-wrap gap-2">
+              {GENRES.map(g => (
+                <button key={g.key}
+                  onClick={() => setGenre(genre === g.key ? "" : g.key)}
+                  className={`px-3 py-1 rounded-full text-sm border transition
+                    ${genre===g.key ? "bg-[#C7D7B3] border-[#9EB18E]" : "bg-white border-gray-300"}`}>
+                  {g.label}
+                </button>
               ))}
             </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-2 gap-3">
-                {list.map((r) => (
-                  <RecipeCard
-                    key={`recipe-${r.id}`}
-                    r={r}
-                    highlight={highlight}
-                  />
-                ))}
-              </div>
-              {!useRecommended && recipes.next_page_url && (
-                <div className="mt-2">
-                  <Link
-                    href={recipes.next_page_url}
-                    preserveScroll
-                    preserveState
-                    className="block text-center text-sm text-amber-600"
-                  >
-                    もっと見る
-                  </Link>
-                </div>
-              )}
-            </>
-          )}
+          </div>
+            {/* 安全度 */}
+          <div className="mb-4">
+            <p className="text-sm text-gray-500 mb-2">安全度</p>
+            <div className="flex gap-2">
+              {[
+                {k:"safe", l:"4毒フリー"},
+                {k:"caution", l:"要注意（甘味料/添加）"},
+                {k:"ng", l:"NG（小麦/乳含む）"},
+              ].map(s=>(
+                <button key={s.k}
+                  onClick={()=> setSafety(safety===s.k ? "" : s.k)}
+                  className={`px-3 py-1 rounded-full text-sm border
+                    ${safety===s.k ? "bg-[#FFEAD1] border-amber-300" : "bg-white border-gray-300"}`}>
+                  {s.l}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 並び替え */}
+          <div className="mb-6">
+            <p className="text-sm text-gray-500 mb-2">並び替え</p>
+            <div className="flex gap-2">
+              {[
+                {k:"popular", l:"人気順"},
+                {k:"updated", l:"新着順"},
+                {k:"name", l:"名前順"},
+                {k:"price", l:"価格順"},
+              ].map(o=>(
+                <button key={o.k}
+                  onClick={()=> setSort(o.k)}
+                  className={`px-3 py-1 rounded-full text-sm border
+                    ${sort===o.k ? "bg-[#E6EEE0] border-[#B9C9AB]" : "bg-white border-gray-300"}`}>
+                  {o.l}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* アクション */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => { setGenre(""); setSafety(""); setSort("popular"); }}
+              className="flex-1 py-2 rounded-lg border text-gray-700"
+            >リセット</button>
+            <button
+              onClick={() => setOpenSheet(false)}
+              className="flex-1 py-2 rounded-lg bg-[#71896E] text-white"
+            >この条件で見る</button>
+          </div>
+  </Modal>
+
         </div>
-      </div>
     </AppShell>
   );
 }

@@ -81,8 +81,4 @@ class Recipe extends Model
                 : $value;
     }
 
-    public function viewHistories(){
-        return $this->hasMany(ViewHistory::class);
-    }
-
 }
