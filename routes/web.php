@@ -9,6 +9,9 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\ShoppingListController;  
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Admin\SeasoningController as AdminSeasoningController;
+
+
 
 Route::get('/welcome', function () {
     return Inertia::render('Welcome', [
@@ -53,5 +56,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::middleware(['auth', 'can:manage-seasonings'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/seasonings', [AdminSeasoningController::class, 'index'])->name('seasonings.index');
+        Route::get('/seasonings/create', [AdminSeasoningController::class, 'create'])->name('seasonings.create');
+        Route::post('/seasonings', [AdminSeasoningController::class, 'store'])->name('seasonings.store');
+        Route::get('/seasonings/{seasoning}/edit', [AdminSeasoningController::class, 'edit'])->name('seasonings.edit');
+        Route::put('/seasonings/{seasoning}', [AdminSeasoningController::class, 'update'])->name('seasonings.update');
+        Route::delete('/seasonings/{seasoning}', [AdminSeasoningController::class, 'destroy'])->name('seasonings.destroy');
+    });
 
 require __DIR__.'/auth.php';
