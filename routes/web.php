@@ -57,7 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'can:manage-seasonings'])
+Route::middleware(['auth'])   // ← ここだけにする
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -68,5 +68,6 @@ Route::middleware(['auth', 'can:manage-seasonings'])
         Route::put('/seasonings/{seasoning}', [AdminSeasoningController::class, 'update'])->name('seasonings.update');
         Route::delete('/seasonings/{seasoning}', [AdminSeasoningController::class, 'destroy'])->name('seasonings.destroy');
     });
+
 
 require __DIR__.'/auth.php';

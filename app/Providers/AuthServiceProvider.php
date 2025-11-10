@@ -7,12 +7,28 @@ use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
+    /**
+     * The policy mappings for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected $policies = [
+        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+    ];
+
+    /**
+     * Register any authentication / authorization services.
+     */
     public function boot(): void
     {
-        Gate::define('manage-seasonings', function ($user) {
-            return (bool) $user->is_admin;
-        });
+        // Gate::before(function ($user, $ability = null) {
+        //     return $user?->is_admin ? true : null;
+        // });
 
-        Gate::define('manage-seasonings', fn ($user) => (bool) $user->is_admin);
+        // Gate::define('manage-seasonings', function ($user) {
+        //     return (bool) $user->is_admin;
+        // });
     }
+
+
 }

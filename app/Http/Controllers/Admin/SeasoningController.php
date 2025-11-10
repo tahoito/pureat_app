@@ -91,6 +91,7 @@ class SeasoningController extends Controller
 
     public function update(Request $r, Seasoning $seasoning)
     {
+       
         $v = $r->validate([
             'name'  => ['required','string','max:255'],
             'brand' => ['nullable','string','max:255'],
@@ -108,8 +109,6 @@ class SeasoningController extends Controller
         }
 
         $seasoning->fill($v);
-        // ※ 名前変更で slug も変えたいなら↓
-        // $seasoning->slug = Str::slug($v['name']) ?: $seasoning->slug;
         $seasoning->save();
 
         return redirect()->route('admin.seasonings.index')
