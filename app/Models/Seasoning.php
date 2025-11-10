@@ -11,7 +11,8 @@ class Seasoning extends Model
 
     protected $fillable = [
         'name','brand','slug','genre','price','volume','image_path','shop_url',
-        'is_published','gf','df','sf','af','ingredients_text','description','features','alternatives'
+        'is_published','gf','df','sf','af','ingredients_text','description','features','alternatives',
+        'quantity','quantity_unit',
     ];
 
     protected $casts = [

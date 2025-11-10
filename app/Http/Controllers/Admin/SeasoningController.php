@@ -33,7 +33,8 @@ class SeasoningController extends Controller
         return Inertia::render('Admin/Seasonings/Index', [
             'items'   => $items,
             'filters' => compact('q','genre','sort','per'),
-            'genres'  => ['soy sauce','miso','salt','vinegar','sweetener','oil'],
+            'genres'  => ['soy sauce','miso','salt','vinegar','sweetener','oil','sauce', 
+                            'spice', 'herb', 'broth', 'paste', 'condiment'],
         ]);
     }
 
@@ -41,7 +42,8 @@ class SeasoningController extends Controller
     {
         return Inertia::render('Admin/Seasonings/Form', [
             'item'   => null,
-            'genres' => ['soy sauce','miso','salt','vinegar','sweetener','oil'],
+            'genres' => ['soy sauce','miso','salt','vinegar','sweetener','oil','sauce', 
+                            'spice', 'herb', 'broth', 'paste', 'condiment'],
         ]);
     }
 
@@ -57,6 +59,9 @@ class SeasoningController extends Controller
             'ingredients_text' => ['nullable','string','max:2000'],
             'description'      => ['nullable','string','max:2000'],
             'is_published'     => ['boolean'],
+            'quantity'      => ['nullable','integer','min:0'],
+            'quantity_unit' => ['nullable','string','max:10'],
+
         ]);
 
         $path = $r->hasFile('image') ? $r->file('image')->store('seasonings','public') : null;
@@ -85,7 +90,8 @@ class SeasoningController extends Controller
     {
         return Inertia::render('Admin/Seasonings/Form', [
             'item'   => $seasoning,
-            'genres' => ['soy sauce','miso','salt','vinegar','sweetener','oil'],
+            'genres' => ['soy sauce','miso','salt','vinegar','sweetener','oil','sauce', 
+                            'spice', 'herb', 'broth', 'paste', 'condiment'],
         ]);
     }
 
@@ -102,6 +108,9 @@ class SeasoningController extends Controller
             'ingredients_text' => ['nullable','string','max:2000'],
             'description'      => ['nullable','string','max:2000'],
             'is_published'     => ['boolean'],
+            'quantity'      => ['nullable','integer','min:0'],
+            'quantity_unit' => ['nullable','string','max:10'],
+
         ]);
 
         if ($r->hasFile('image')) {

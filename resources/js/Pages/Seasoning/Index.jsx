@@ -13,15 +13,52 @@ const GENRES = [
   { key: "vinegar", label: "酢" },
   { key: "sweetener", label: "甘味料" },
   { key: "oil", label: "油" },
+  { key: "sauce", label: "ソース" },
+  { key: "spice", label: "スパイス" },
+  { key: "herb", label: "ハーブ" },
+  { key: "broth", label: "だし" },
+  { key: "paste", label: "ペースト" },
+  { key: "condiment", label: "調味料その他" }
 ]
 
 /* ---------------- Page ---------------- */
 export default function SeasoningsIndex() {
+  // 検索条件ラベル関数
+  function resolveGenreLabel(val) {
+    if (!val) return null;
+    const hit = GENRES.find(g => g.key === val);
+    return hit?.label ?? val;
+  }
+  function resolveSafetyLabel(val) {
+    if (!val || val === "all") return null;
+    if (val === "safe") return "4毒フリー";
+    if (val === "caution") return "要注意";
+    if (val === "ng") return "NG";
+    return val;
+  }
+  function resolveSortLabel(val) {
+    if (!val) return null;
+    if (val === "popular") return "人気順";
+    if (val === "price") return "価格順";
+    if (val === "name") return "名前順";
+    if (val === "updated") return "新着順";
+    return val;
+  }
+
+  // 条件クリア
+  function clearFilter(key) {
+    if (key === "q") setQ("");
+    if (key === "genre") setGenre("");
+    if (key === "safety") setSafety("all");
+    if (key === "sort") setSort("popular");
+  }
+
   const { items, filters } = usePage().props;
   const [ q, setQ ] = useState(filters.q || "");
   const [ genre, setGenre ] = useState(filters.genre || "");
   const [ sort, setSort ] = useState(filters.sort || "name_asc");
   const [ safety, setSafety ] = useState(filters.safety || "all");
+  const hasFilter = !!(q || genre || (safety && safety !== "all") || (sort && sort !== "popular"));
 
   const [ openSheet, setOpenSheet ] = useState(false);
   
@@ -41,14 +78,15 @@ export default function SeasoningsIndex() {
     if (type === "cheap") { setSort(sort === "price" ? "popular": "price"); return;}
   }
 
+
   return (
     <AppShell title="調味料検索">
       <Head title="調味料検索" />
 
-  <div className="p-6 pb-3 space-y-6">
+  <div className="p-6 pb-1 space-y-2">
         {/* 検索 */}
         <form
-          className="relative mb-1"
+          className="relative mb-0"
           onSubmit={(e) => {
             e.preventDefault();
             router.get(
@@ -73,7 +111,44 @@ export default function SeasoningsIndex() {
           </button>
         </form>
 
-        <section className="mb-1">
+        {hasFilter && (
+          <div className="flex flex-wrap gap-2 mb-2">
+            {q && (
+              <button
+                onClick={() => clearFilter("q")}
+                className="px-3 h-8 rounded-full bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A] text-sm"
+              >
+                検索: {q} ×
+              </button>
+            )}
+            {genre && (
+              <button
+                onClick={() => clearFilter("genre")}
+                className="px-3 h-8 rounded-full bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A] text-sm"
+              >
+                ジャンル: {resolveGenreLabel(genre)} ×
+              </button>
+            )}
+            {safety && safety !== "all" && (
+              <button
+                onClick={() => clearFilter("safety")}
+                className="px-3 h-8 rounded-full bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A] text-sm"
+              >
+                安全度: {resolveSafetyLabel(safety)} ×
+              </button>
+            )}
+            {sort && sort !== "popular" && (
+              <button
+                onClick={() => clearFilter("sort")}
+                className="px-3 h-8 rounded-full bg-[#E6EEE0] border-[#B9C9AB] text-[#2E3E2A] text-sm"
+              >
+                並び順: {resolveSortLabel(sort)} ×
+              </button>
+            )}
+          </div>
+        )}
+
+  <section className="mb-0">
           <div className="px-2 pb-1 flex flex-wrap items-center gap-1">
           <button
             onClick={() => setOpenSheet(true)}

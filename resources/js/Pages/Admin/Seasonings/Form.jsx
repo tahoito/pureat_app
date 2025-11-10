@@ -98,6 +98,30 @@ export default function FormPage() {
             />
           </label>
 
+          <label className="block">
+          <span className="text-sm">内容量</span>
+            <div className="flex gap-2">
+              <input
+                type="number"
+                className="mt-1 w-24 border rounded-md px-3 py-2"
+                value={data.quantity ?? ""}
+                onChange={(e) => setData("quantity", e.target.value)}
+                placeholder="300"
+              />
+              <select
+                className="mt-1 w-24 border rounded-md px-2 py-2"
+                value={data.quantity_unit ?? ""}
+                onChange={(e) => setData("quantity_unit", e.target.value)}
+              >
+                <option value="">単位</option>
+                <option value="ml">ml</option>
+                <option value="g">g</option>
+                <option value="L">L</option>
+              </select>
+            </div>
+          </label>
+
+
           <label className="block sm:col-span-2">
             <span className="text-sm">画像</span>
             <input
