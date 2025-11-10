@@ -19,14 +19,18 @@ export default function SeasoningCard({ item }) {
       <img src={img} alt={item.name} className="w-full h-28 object-contain p-2 bg-white" />
       <div className="p-2">
         <h3 className="text-sm font-medium line-clamp-1">{item.name}</h3>
-        {item.price && (
-          <p className="text-xs text-gray-500">
-            {item.price}円
-            {item.quantity && item.quantity_unit && (
-              <> / {item.quantity}{item.quantity_unit}</>
-            )}
-          </p>
-        )}
+        <div className="flex items-baseline gap-1">
+          {item.price && (
+            <p className="text-xs text-gray-600">
+              {item.price}円
+            </p>
+          )}
+          {item.quantity && item.quantity_unit && (
+            <p className="text-xs text-gray-450">
+              ({item.quantity}{item.quantity_unit})
+            </p>
+          )}
+        </div>
         <div className="flex gap-1 mt-1 flex-wrap">
           {item.gf && item.df && item.sf && item.af ? (
             <span className="text-[10px] px-2 py-0.5 bg-[#D6E5C2] text-[#3B4A34] rounded-full">4毒フリー</span>

@@ -32,7 +32,7 @@ class SeasoningController extends Controller
       ->when($sort === 'price', fn($x)=>$x->orderBy('price'))
       ->when($sort === 'updated', fn($x)=>$x->latest('updated_at'))
       ->when($sort === 'popular', fn($x)=>$x->latest('id'))
-      ->select(['id','name','brand','slug','genre','price','image_path','gf','df','sf','af'])
+      ->select(['id','name','brand','slug','genre','price','image_path','gf','df','sf','af','quantity','quantity_unit'])
       ->paginate(12)->withQueryString();
 
     return Inertia::render('Seasoning/Index',[

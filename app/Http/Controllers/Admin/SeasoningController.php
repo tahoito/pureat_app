@@ -80,6 +80,8 @@ class SeasoningController extends Controller
             'ingredients_text' => $v['ingredients_text'] ?? null,
             'description'      => $v['description'] ?? null,
             'is_published'     => (bool)($v['is_published'] ?? true),
+            'quantity'      => $v['quantity'] ?? null,
+            'quantity_unit' => $v['quantity_unit'] ?? null,
         ]);
 
         return redirect()->route('admin.seasonings.index')

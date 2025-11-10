@@ -19,6 +19,8 @@ export default function FormPage() {
     ingredients_text: item?.ingredients_text ?? "",
     description: item?.description ?? "",
     is_published: item?.is_published ?? true,
+    quantity: item?.quantity ?? "",
+    quantity_unit: item?.quantity_unit ?? "",
     _method: isEdit ? "put" : "post",   // ★ 更新時は最初から put
   });
 
