@@ -51,7 +51,7 @@ class SeasoningController extends Controller
         'name'=>$seasoning->name,
         'brand'=>$seasoning->brand,
         'price'=>$seasoning->price,
-        'volume'=>$seasoning->volume,
+        'image_path'=>$seasoning->image_path,
         'image_url'=>$seasoning->image_url,
         'shop_url'=>$seasoning->shop_url,
         'gf'=>$seasoning->gf,'df'=>$seasoning->df,'sf'=>$seasoning->sf,'af'=>$seasoning->af,
