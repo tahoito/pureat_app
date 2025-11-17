@@ -23,18 +23,14 @@ class HomeController extends Controller
             $tab = 'all';
         }
 
-        // --------------------
-        // カテゴリ & タグ
-        // --------------------
+        
         $categories = Category::orderBy('id')
             ->take(9)
             ->get(['id','name','slug','image_url']);
 
         $tags = Tag::orderBy('name')->get(['id','name','slug']);
 
-        // --------------------
-        // 通常レシピ一覧
-        // --------------------
+     
         $recipes = Recipe::query()
             //->where('user_id',auth()->id())
             ->select(['id','title','description','total_minutes','main_image_path'])

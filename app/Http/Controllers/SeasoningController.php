@@ -11,10 +11,10 @@ class SeasoningController extends Controller
 {
   public function index(Request $r){
     $q       = trim((string)$r->query('q',''));
-    $genre   = $r->query('genre');              // 'shoyu'等 複数なら配列でもOK
-    $safety  = $r->query('safety');             // 'safe'|'caution'|'ng'
-    $altOnly = (bool)$r->query('alt_only');     // 代替あり
-    $sort    = $r->query('sort','popular');     // popular|name|price|updated
+    $genre   = $r->query('genre');              
+    $safety  = $r->query('safety');            
+    $altOnly = (bool)$r->query('alt_only');     
+    $sort    = $r->query('sort','popular');     
 
     $items = Seasoning::query()
       ->where('is_published',true)
@@ -51,6 +51,8 @@ class SeasoningController extends Controller
         'name'=>$seasoning->name,
         'brand'=>$seasoning->brand,
         'price'=>$seasoning->price,
+        'quantity'=>$seasoning->quantity,
+        'quantity_unit'=>$seasoning->quantity_unit,
         'image_path'=>$seasoning->image_path,
         'image_url'=>$seasoning->image_url,
         'shop_url'=>$seasoning->shop_url,

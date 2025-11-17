@@ -13,30 +13,19 @@ export default function SeasoningsShow() {
     const from = params.get("from");
 
 
-    const updated = params.get("updated") === "1";
-
-    const fallback = 
-        from === "favorites"
-            ? route("favorites.index")
-            : from === "history"
-            ? route("history.index")
-            : route("home.index");
-
-
     const goBack = React.useCallback (() => {
-        if(from) {
-            router.visit(fallback,{ replace:true, preserveScroll:true});
-        }else{
-            router.visit(route('home.index'),{ replace:true });
-        }
-    },[from, fallback, updated]);
+        window.history.back();
+    },[]);
 
-    const img =
-    item.image_url
-      ? item.image_url
-      : item.image_path
-        ? `/storage/${item.image_path}`
-        : "/images/placeholder.jpeg";
+    // 画像URLの生成
+    const resolveImg = (path) => {
+        if (!path) return "/images/placeholder.jpeg";
+        if (path.startsWith("http")) return path;
+        if (path.startsWith("/storage/")) return path;
+        return `/storage/${path.replace(/^\/?storage\//, "")}`;
+    };
+    
+    const img = resolveImg(item.image_path || item.image_url);
 
 
     function AddToShoppingButton({ seasoningId }) {
