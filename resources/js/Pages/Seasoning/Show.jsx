@@ -41,13 +41,18 @@ export default function SeasoningsShow() {
       setAdding(true);
       try {
         // ★ API 側で seasoning_id を受け取るようにしてね
-        await axios.post(route("shopping-list.add"), { seasoning_id: seasoningId });
+        const url = route("shopping-list.add");
+        console.log("Posting to:", url);
+        const response = await axios.post(url, { seasoning_id: seasoningId });
+        console.log("Response:", response);
 
         const EXPIRE_MS = 12 * 60 * 60 * 1000; // 12時間
         localStorage.setItem(KEY, String(Date.now() + EXPIRE_MS));
         setAdded(true);
       } catch (e) {
-        console.error(e);
+        console.error("Error:", e);
+        console.error("Error config:", e.config);
+        console.error("Error response:", e.response);
         setAdded(false);
       } finally {
         setAdding(false);
@@ -184,6 +189,38 @@ export default function SeasoningsShow() {
               )}
             </div>
           </section>
+
+          {/* 特徴セクション */}
+          {item.features && Array.isArray(item.features) && item.features.length > 0 && (
+            <section className="mt-10">
+              <h2 className="text-center text-lg font-semibold text-gray-800">
+                特徴
+              </h2>
+              <div className="mt-4 rounded-xl bg-white border px-4 py-3">
+                <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                  {item.features.map((feature, i) => (
+                    <li key={i}>{feature}</li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+          )}
+
+        
+          {item.alternatives && Array.isArray(item.alternatives) && item.alternatives.length > 0 && (
+            <section className="mt-10">
+              <h2 className="text-center text-lg font-semibold text-gray-800">
+                代替品・代用品
+              </h2>
+              <div className="mt-4 rounded-xl bg-white border px-4 py-3">
+                <ul className="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                  {item.alternatives.map((alt, i) => (
+                    <li key={i}>{alt}</li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+          )}
         </div>
       </main>
     </AppShell>

@@ -67,6 +67,8 @@ export default function AdminSeasoningsIndex() {
               <th className="p-2 text-left">ブランド</th>
               <th className="p-2 text-left">ジャンル</th>
               <th className="p-2 text-left">価格</th>
+              <th className="p-2 text-left">説明</th>
+              <th className="p-2 text-left">ショップURL</th>
               <th className="p-2 text-center">公開</th>
               <th className="p-2 text-center w-24">操作</th>
             </tr>
@@ -74,7 +76,7 @@ export default function AdminSeasoningsIndex() {
           <tbody>
             {items.data.length === 0 ? (
               <tr>
-                <td colSpan="7" className="p-6 text-center text-gray-500">データがありません</td>
+                <td colSpan="9" className="p-6 text-center text-gray-500">データがありません</td>
               </tr>
             ) : (
               items.data.map((it) => (
@@ -90,6 +92,16 @@ export default function AdminSeasoningsIndex() {
                   <td className="p-2">{it.brand ?? "-"}</td>
                   <td className="p-2">{it.genre ?? "-"}</td>
                   <td className="p-2">{it.price ? `${it.price}円` : "-"}</td>
+                  <td className="p-2 max-w-xs truncate text-gray-600 text-xs">{it.description ?? "-"}</td>
+                  <td className="p-2 max-w-xs">
+                    {it.shop_url ? (
+                      <a href={it.shop_url} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline text-xs truncate block">
+                        {it.shop_url}
+                      </a>
+                    ) : (
+                      <span className="text-gray-400">-</span>
+                    )}
+                  </td>
                   <td className="p-2 text-center">
                     {it.is_published ? <span className="text-green-600 font-medium">公開</span> : <span className="text-gray-400">非公開</span>}
                   </td>

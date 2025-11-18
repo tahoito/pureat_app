@@ -6,7 +6,7 @@ export default function FormPage() {
   const { item, genres } = usePage().props;
   const isEdit = !!item;
 
-  const { data, setData, post, processing, errors } = useForm({
+  const { data, setData, post, put, processing, errors } = useForm({
     name: item?.name ?? "",
     brand: item?.brand ?? "",
     genre: item?.genre ?? "",
@@ -21,26 +21,28 @@ export default function FormPage() {
     is_published: item?.is_published ?? true,
     quantity: item?.quantity ?? "",
     quantity_unit: item?.quantity_unit ?? "",
-    _method: isEdit ? "put" : "post",   // ★ 更新時は最初から put
+    shop_url: item?.shop_url ?? "",
+    features: Array.isArray(item?.features) ? item.features.join(", ") : (item?.features ?? ""),
+    alternatives: Array.isArray(item?.alternatives) ? item.alternatives.join(", ") : (item?.alternatives ?? ""),
   });
 
   const submit = (e) => {
     e.preventDefault();
 
-    console.log("submit data", data);   // ★ ブラウザで確認用
+    // デバッグ: 送信データを確認
+    console.log("Submit data:", data);
+    console.log("Name value:", data.name);
+    console.log("Name length:", data.name?.length);
+
+    // image が null でない場合のみ forceFormData を true に
+    const options = data.image ? { forceFormData: true } : {};
 
     if (isEdit) {
-      post(route("admin.seasonings.update", item.id), {
-        forceFormData: true,            // ★ Fileを含めてFormDataで送る
-        preserveScroll: true,
-        onFinish: () => setData("image", null),
-      });
+      // PUT で送信
+      put(route("admin.seasonings.update", item.id), options);
     } else {
-      post(route("admin.seasonings.store"), {
-        forceFormData: true,
-        preserveScroll: true,
-        onFinish: () => setData("image", null),
-      });
+      // POST で送信
+      post(route("admin.seasonings.store"), options);
     }
   };
 
@@ -179,6 +181,43 @@ export default function FormPage() {
             onChange={(e) =>
               setData("description", e.target.value)
             }
+          />
+        </label>
+
+        <label className="block">
+          <span className="text-sm">ショップURL</span>
+          <input
+            type="url"
+            className="mt-1 w-full border rounded-md px-3 py-2"
+            value={data.shop_url}
+            onChange={(e) => setData("shop_url", e.target.value)}
+            placeholder="https://example.com"
+          />
+        </label>
+
+        <label className="block">
+          <span className="text-sm">特徴（カンマ区切り）</span>
+          <textarea
+            className="mt-1 w-full border rounded-md px-3 py-2"
+            rows={2}
+            value={data.features}
+            onChange={(e) =>
+              setData("features", e.target.value)
+            }
+            placeholder="例: 無添加, オーガニック, グルテンフリー"
+          />
+        </label>
+
+        <label className="block">
+          <span className="text-sm">代替品</span>
+          <textarea
+            className="mt-1 w-full border rounded-md px-3 py-2"
+            rows={2}
+            value={data.alternatives}
+            onChange={(e) =>
+              setData("alternatives", e.target.value)
+            }
+            placeholder="代替商品の説明"
           />
         </label>
 

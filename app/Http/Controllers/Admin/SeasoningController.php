@@ -61,10 +61,20 @@ class SeasoningController extends Controller
             'is_published'     => ['boolean'],
             'quantity'      => ['nullable','integer','min:0'],
             'quantity_unit' => ['nullable','string','max:10'],
-
+            'shop_url'      => ['nullable','url'],
+            'features'      => ['nullable','string','max:2000'],
+            'alternatives'  => ['nullable','string','max:2000'],
         ]);
 
         $path = $r->hasFile('image') ? $r->file('image')->store('seasonings','public') : null;
+
+        // features と alternatives を配列に変換
+        $features = $v['features'] 
+            ? array_map('trim', array_filter(explode(',', $v['features'])))
+            : [];
+        $alternatives = $v['alternatives'] 
+            ? array_map('trim', array_filter(explode(',', $v['alternatives'])))
+            : [];
 
         Seasoning::create([
             'name' => $v['name'],
@@ -82,9 +92,12 @@ class SeasoningController extends Controller
             'is_published'     => (bool)($v['is_published'] ?? true),
             'quantity'      => $v['quantity'] ?? null,
             'quantity_unit' => $v['quantity_unit'] ?? null,
+            'shop_url'      => $v['shop_url'] ?? null,
+            'features'      => $features,
+            'alternatives'  => $alternatives,
         ]);
 
-        return redirect()->route('admin.seasonings.index')
+        return redirect()->route('admin.seasonings.index', status: 303)
             ->with('flash',['type'=>'success','message'=>'調味料を登録したよ']);
     }
 
@@ -112,17 +125,27 @@ class SeasoningController extends Controller
             'is_published'     => ['boolean'],
             'quantity'      => ['nullable','integer','min:0'],
             'quantity_unit' => ['nullable','string','max:10'],
-
+            'shop_url'      => ['nullable','url'],
+            'features'      => ['nullable','string','max:2000'],
+            'alternatives'  => ['nullable','string','max:2000'],
         ]);
 
         if ($r->hasFile('image')) {
             $seasoning->image_path = $r->file('image')->store('seasonings','public');
         }
 
+        // features と alternatives を配列に変換
+        $v['features'] = $v['features'] 
+            ? array_map('trim', array_filter(explode(',', $v['features'])))
+            : [];
+        $v['alternatives'] = $v['alternatives'] 
+            ? array_map('trim', array_filter(explode(',', $v['alternatives'])))
+            : [];
+
         $seasoning->fill($v);
         $seasoning->save();
 
-        return redirect()->route('admin.seasonings.index')
+        return redirect()->route('admin.seasonings.index', status: 303)
             ->with('flash',['type'=>'success','message'=>'調味料を更新したよ']);
     }
 

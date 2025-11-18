@@ -32,7 +32,7 @@ class SeasoningController extends Controller
       ->when($sort === 'price', fn($x)=>$x->orderBy('price'))
       ->when($sort === 'updated', fn($x)=>$x->latest('updated_at'))
       ->when($sort === 'popular', fn($x)=>$x->latest('id'))
-      ->select(['id','name','brand','slug','genre','price','image_path','gf','df','sf','af','quantity','quantity_unit'])
+      ->select(['id','name','brand','slug','genre','price','image_path','gf','df','sf','af','quantity','quantity_unit','description','shop_url'])
       ->paginate(12)->withQueryString();
   
 
@@ -42,6 +42,45 @@ class SeasoningController extends Controller
         'q'=>$q,'genre'=>$genre,'safety'=>$safety,'alt_only'=>$altOnly,'sort'=>$sort,
       ],
     ]);
+  }
+
+  public function store(Request $r){
+    $v = $r->validate([
+        'name' => ['required','string','max:255'],
+        'brand' => ['nullable','string','max:255'],
+        'genre' => ['nullable','string','max:50'],
+        'price' => ['nullable','integer','min:0'],
+        'image' => ['nullable','image','max:5120'],
+        'gf' => ['boolean'], 'df' => ['boolean'], 'sf' =>
+  ['boolean'], 'af' => ['boolean'],
+        'ingredients_text' => ['nullable','string','max:2000'],
+        'description'      => ['nullable','string','max:2000'],
+        'is_published'     => ['boolean'],
+        'shop_url'      => ['nullable','string','max:1000'],
+    ]);
+
+    $path = $r->hasFile('image')
+        ? $r->file('image')->store('seasonings','public')
+        : null;
+
+      Seasoning::create([
+        'name'=>$v['name'],
+        'brand'=>$v['brand'] ?? null,
+        'genre'=>$v['genre'] ?? null,
+        'price'=>$v['price'] ?? null,
+        'image_path'=>$path,
+        'gf'=>$v['gf'] ?? false,
+        'df'=>$v['df'] ?? false,
+        'sf'=>$v['sf'] ?? false,
+        'af'=>$v['af'] ?? false,
+        'ingredients_text'=>$v['ingredients_text'] ?? null,
+        'description'=>$v['description'] ?? null,
+        'is_published'=>$v['is_published'] ?? false,
+        'shop_url'=>$v['shop_url'] ?? null,
+      ]);
+
+      return redirect()->route('admin.seasonings.index')
+        ->with('flash',['type'=>'success','message'=>'調味料を登録したよ']);
   }
 
   public function show(Seasoning $seasoning){
@@ -55,18 +94,43 @@ class SeasoningController extends Controller
         'quantity'=>$seasoning->quantity,
         'quantity_unit'=>$seasoning->quantity_unit,
         'image_path'=>$seasoning->image_path,
-        'image_url'=>$seasoning->image_url,
         'shop_url'=>$seasoning->shop_url,
         'gf'=>$seasoning->gf,'df'=>$seasoning->df,'sf'=>$seasoning->sf,'af'=>$seasoning->af,
         'ingredients_text'=>$seasoning->ingredients_text,
         'description'=>$seasoning->description,
-        'features'=>$seasoning->features,
-        'alternatives'=>$seasoning->alternatives,
+        'features'=>$seasoning->features ?? [],
+        'alternatives'=>$seasoning->alternatives ?? [],
         'recipes'=>$seasoning->recipes->map(fn($r)=>[
           'id'=>$r->id,'title'=>$r->title,'image'=>$r->main_image_path, 'minutes'=>$r->total_minutes
         ]),
       ]
     ]);
+  }
+
+  public function update(Request $r, Seasoning $seasoning){
+    $v = $r->validate([
+        'name' => ['required','string','max:255'],
+        'brand' => ['nullable','string','max:255'],
+        'genre' => ['nullable','string','max:50'],
+        'price' => ['nullable','integer','min:0'],
+        'image' => ['nullable','image','max:5120'],
+        'gf' => ['boolean'], 'df' => ['boolean'], 'sf' => ['boolean'], 'af' => ['boolean'],
+        'ingredients_text' => ['nullable','string','max:2000'],
+        'description'      => ['nullable','string','max:2000'],
+        'is_published'     => ['boolean'],
+        'shop_url'      => ['nullable','string','max:1000'],
+    ]);
+    
+    if($r->hasFile('image')){
+      $path = $r->file('image')->store('seasonings','public');
+      $seasoning->image_path = $path;
+    }
+
+    $seasoning->fill($v);
+    $seasoning->save();
+
+    return redirect()->route('admin.seasonings.index')
+      ->with('flash',['type'=>'success','message'=>'調味料を更新したよ']);  
   }
 
   public function toShopping(Request $r, Seasoning $seasoning){

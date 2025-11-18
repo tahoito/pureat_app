@@ -4,23 +4,16 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
+return new class extends Migration {
     public function up(): void
     {
         Schema::table('seasonings', function (Blueprint $table) {
-            $table->text('description')->nullable()->after('quantity_unit');
-            $table->text('ingredients_text')->nullable()->after('description');
-            $table->string('shop_url')->nullable()->after('ingredients_text');
+            //$table->text('description')->nullable();
+            //$table->text('ingredients_text')->nullable();
+            //$table->string('shop_url')->nullable();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('seasonings', function (Blueprint $table) {

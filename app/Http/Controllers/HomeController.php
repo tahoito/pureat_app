@@ -26,7 +26,7 @@ class HomeController extends Controller
         
         $categories = Category::orderBy('id')
             ->take(9)
-            ->get(['id','name','slug','image_url']);
+            ->get(['id','name','slug','image_url','icon']);
 
         $tags = Tag::orderBy('name')->get(['id','name','slug']);
 

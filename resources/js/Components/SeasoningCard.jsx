@@ -8,7 +8,7 @@ function resolveImg(path) {
 }
 
 export default function SeasoningCard({ item }) {
-  const img = resolveImg(item.image_path);
+  const img = resolveImg(item.image_path || item.image.url);
 
   return (
     <Link
